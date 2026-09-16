@@ -586,6 +586,23 @@
   .cb-slot:hover{border-color:var(--ink);}
   .cb-slot.is-selected{background:var(--orange);border-color:var(--orange);color:var(--orange-ink);}
   .cb-drawer .btn[disabled]{opacity:0.5;cursor:not-allowed;}
+
+  /* ============ LIVE APP EMBED FRAME ============ */
+  /* The embedded app (psas-shop.web.app) renders its own Material UI and
+     can't be restyled from here (cross-origin iframe) — this chrome wraps
+     it in the site's own visual language instead of leaving a bare
+     white rectangle. */
+  .embed-frame{border-radius:20px;overflow:hidden;border:1px solid var(--line);box-shadow:0 20px 44px var(--shadow);background:var(--paper-raised);}
+  .embed-frame-head{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:14px 20px;background:linear-gradient(135deg, var(--orange), var(--orange-deep));color:var(--orange-ink);
+  }
+  .embed-frame-live{display:flex;align-items:center;gap:8px;font-family:var(--font-eyebrow);font-weight:700;font-size:0.76rem;letter-spacing:0.1em;text-transform:uppercase;}
+  .embed-frame-live .dot{width:7px;height:7px;border-radius:50%;background:var(--orange-ink);flex:none;animation:embedPulse 1.8s ease-in-out infinite;}
+  @keyframes embedPulse{0%,100%{opacity:1;}50%{opacity:0.35;}}
+  @media (prefers-reduced-motion: reduce){ .embed-frame-live .dot{animation:none;} }
+  .embed-frame-brand{font-family:var(--font-display);font-weight:800;font-size:0.92rem;color:var(--orange-ink);opacity:0.92;}
+  .embed-frame iframe{width:100%;border:0;display:block;background:var(--paper-raised);}
 </style>
 
 <div class="announce">School Holiday Camp registration for Nov&ndash;Dec 2026 is open &mdash; <a href="#camps">reserve a spot</a></div>
@@ -1052,9 +1069,12 @@
       <h2>Book straight from here.</h2>
       <p class="lede">This is the real Pegasus booking system, embedded &mdash; browse signed out, sign in only when you tap Book.</p>
     </div>
-    <div style="border-radius:20px;overflow:hidden;border:1px solid var(--line);box-shadow:0 20px 44px var(--shadow);">
-      <iframe src="https://psas-shop.web.app/#/timetable" title="Book a class" loading="lazy"
-        style="width:100%;height:760px;border:0;display:block;background:var(--paper-raised);"></iframe>
+    <div class="embed-frame">
+      <div class="embed-frame-head">
+        <span class="embed-frame-live"><span class="dot"></span>Live</span>
+        <span class="embed-frame-brand">Pegasus App</span>
+      </div>
+      <iframe src="https://psas-shop.web.app/#/timetable" title="Book a class" loading="lazy" style="height:760px;"></iframe>
     </div>
   </div>
 </section>
@@ -1270,9 +1290,12 @@
       <h2>Browse and buy below.</h2>
       <p class="lede">Real-time plan list from our booking system &mdash; browse signed out, sign in only when you tap Purchase.</p>
     </div>
-    <div style="border-radius:20px;overflow:hidden;border:1px solid var(--line);box-shadow:0 20px 44px var(--shadow);">
-      <iframe src="https://psas-shop.web.app/#/membership" title="Membership plans" loading="lazy"
-        style="width:100%;height:900px;border:0;display:block;background:var(--paper-raised);"></iframe>
+    <div class="embed-frame">
+      <div class="embed-frame-head">
+        <span class="embed-frame-live"><span class="dot"></span>Live</span>
+        <span class="embed-frame-brand">Pegasus App</span>
+      </div>
+      <iframe src="https://psas-shop.web.app/#/membership" title="Membership plans" loading="lazy" style="height:900px;"></iframe>
     </div>
   </div>
 </section>
