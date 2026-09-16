@@ -1,0 +1,1526 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Pegasus Academy Redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,500&family=IBM+Plex+Mono:wght@500;600;700&family=Public+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ============ TOKENS ============ */
+  :root{
+    --paper:#F3EEE2;
+    --paper-raised:#FBF8F1;
+    --ink:#18140F;
+    --ink-soft:#5A4F40;
+    --line:rgba(24,20,15,0.14);
+    --line-strong:rgba(24,20,15,0.28);
+    --orange:#CB520C;
+    --orange-deep:#9E3D08;
+    --orange-tint:#F4DCC3;
+    --orange-ink:#FFF6EC;
+    --pine:#18140F;
+    --pine-deep:#000000;
+    --pine-tint:#E9E5DC;
+    --pine-ink:#FFFFFF;
+    --shadow:rgba(24,20,15,0.10);
+    --focus:#1768AC;
+
+    --font-display:'Fraunces', 'Iowan Old Style', Georgia, serif;
+    --font-eyebrow:'IBM Plex Mono', 'Courier New', monospace;
+    --font-body:'Public Sans', 'Segoe UI', sans-serif;
+
+    --fs-hero: clamp(2.6rem, 5.4vw + 1rem, 5.6rem);
+    --fs-h2: clamp(2rem, 3.4vw + 1rem, 3.15rem);
+    --fs-h3: clamp(1.3rem, 1.4vw + 1rem, 1.7rem);
+    --gutter: clamp(18px, 4.5vw, 56px);
+    --maxw: 1180px;
+
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  /* Dark mode intentionally disabled: the site always renders the light
+     white/orange/black theme regardless of the visitor's device setting.
+     :root[data-theme="dark"] is kept, unused, in case a manual toggle is
+     added later. */
+  :root[data-theme="dark"]{
+    --paper:#15120D;
+    --paper-raised:#1D1812;
+    --ink:#F3EEE2;
+    --ink-soft:#C9BCA6;
+    --line:rgba(243,238,226,0.16);
+    --line-strong:rgba(243,238,226,0.32);
+    --orange:#F2812F;
+    --orange-deep:#FFA35C;
+    --orange-tint:#3B2412;
+    --orange-ink:#1F1409;
+    --pine:#F3EEE2;
+    --pine-deep:#FFFFFF;
+    --pine-tint:#241F17;
+    --pine-ink:#15120D;
+    --shadow:rgba(0,0,0,0.35);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;overflow-x:hidden;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-body);
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    padding-inline:0;
+  }
+  img,svg{max-width:100%;}
+  [hidden]{display:none!important;}
+  h1,h2,h3,h4{font-family:var(--font-display);font-weight:800;line-height:0.98;margin:0;text-wrap:balance;letter-spacing:0.002em;}
+  p{margin:0;}
+  a{color:inherit;}
+  ::selection{background:var(--orange);color:var(--orange-ink);}
+  :focus-visible{outline:2.5px solid var(--focus);outline-offset:3px;}
+
+  .wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:var(--gutter);}
+  .eyebrow{
+    font-family:var(--font-eyebrow);
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.16em;
+    font-size:0.78rem;
+    color:var(--ink-soft);
+  }
+  .eyebrow.on-orange{color:var(--orange-deep);}
+  .eyebrow.on-pine{color:var(--pine);}
+
+  /* ============ ANNOUNCEMENT BAR ============ */
+  .announce{
+    background:var(--orange);
+    color:var(--orange-ink);
+    font-family:var(--font-eyebrow);
+    font-weight:600;
+    letter-spacing:0.03em;
+    text-align:center;
+    padding-block:9px;
+    font-size:0.86rem;
+  }
+  .announce a{color:var(--ink);text-decoration:underline;text-underline-offset:3px;font-weight:700;}
+
+  /* ============ NAV ============ */
+  /* Note: no backdrop-filter/filter/transform on header.site itself — any of those
+     would make it the containing block for the fixed-position mobile drawer below,
+     collapsing the drawer's height. The blur lives on ::before instead. */
+  header.site{
+    position:sticky;
+    top:env(safe-area-inset-top, 0px);
+    z-index:40;
+    border-bottom:1px solid var(--line);
+  }
+  header.site::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter:blur(10px);
+    z-index:-1;
+  }
+  .navrow{
+    max-width:var(--maxw);margin-inline:auto;padding-inline:var(--gutter);
+    display:flex;align-items:center;justify-content:space-between;gap:1rem;
+    padding-block:14px;
+  }
+  .brand{display:flex;align-items:center;text-decoration:none;color:var(--ink);flex:none;}
+  .brand-logo{height:52px;width:auto;display:block;}
+  @media (max-width:520px){ .brand-logo{height:42px;} }
+
+  nav.primary{display:flex;align-items:center;gap:2px;}
+  nav.primary a{
+    font-family:var(--font-eyebrow);font-weight:600;font-size:0.84rem;letter-spacing:0.03em;
+    text-transform:uppercase;text-decoration:none;color:var(--ink-soft);white-space:nowrap;
+    padding:8px 11px;border-radius:3px;transition:color .15s ease, background .15s ease;
+  }
+  nav.primary a:hover{color:var(--ink);background:var(--line);}
+  nav.primary a.is-active{color:var(--ink);position:relative;}
+  nav.primary a.is-active::after{content:"";position:absolute;left:12px;right:12px;bottom:3px;height:2px;background:var(--orange);}
+
+  .navctas{display:flex;align-items:center;gap:10px;}
+  .drawer-ctas{display:none;}
+  .navtoggle{display:none;}
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    font-family:var(--font-eyebrow);font-weight:700;letter-spacing:0.04em;text-transform:uppercase;
+    font-size:0.82rem;text-decoration:none;border-radius:3px;border:1.5px solid transparent;
+    padding:11px 20px;cursor:pointer;transition:transform .15s ease, background .15s ease, border-color .15s ease, color .15s ease;
+    white-space:nowrap;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-orange{background:var(--orange);color:var(--orange-ink);}
+  .btn-orange:hover{background:var(--orange-deep);}
+  .btn-pine{background:var(--pine);color:var(--pine-ink);}
+  .btn-pine:hover{background:var(--pine-deep);}
+  .btn-ghost{background:transparent;color:var(--ink);border-color:var(--line-strong);}
+  .btn-ghost:hover{border-color:var(--ink);}
+  .btn-ghost.small, .btn.small{padding:8px 14px;font-size:0.74rem;}
+
+  @media (max-width: 1180px){
+    nav.primary{
+      position:fixed;inset:0;top:calc(81px + env(safe-area-inset-top,0px));
+      background:var(--paper);flex-direction:column;align-items:stretch;gap:0;
+      padding:10px var(--gutter) 24px;
+      transform:translateX(100%);transition:transform .25s ease;
+      overflow-y:auto;
+    }
+    nav.primary.open{transform:translateX(0);}
+    nav.primary a{font-size:1.05rem;padding:14px 6px;border-bottom:1px solid var(--line);}
+    nav.primary a.is-active::after{display:none;}
+    nav.primary a.is-active{color:var(--orange-deep);}
+    .navctas:not(.drawer-ctas) .btn-ghost.small{display:none;}
+    .drawer-ctas{display:flex;}
+    .navtoggle{
+      display:flex;flex-direction:column;justify-content:center;gap:5px;
+      width:38px;height:34px;background:none;border:none;cursor:pointer;padding:0;
+    }
+    .navtoggle span{display:block;height:2.5px;background:var(--ink);border-radius:2px;transition:transform .2s ease, opacity .2s ease;}
+    .navtoggle.open span:nth-child(1){transform:translateY(7.5px) rotate(45deg);}
+    .navtoggle.open span:nth-child(2){opacity:0;}
+    .navtoggle.open span:nth-child(3){transform:translateY(-7.5px) rotate(-45deg);}
+  }
+
+  /* ============ SECTIONS / GENERIC ============ */
+  main{display:block;}
+  .page{display:none;}
+  .page.is-active{display:block;animation:pagein .35s ease both;}
+  @media (prefers-reduced-motion: reduce){ .page.is-active{animation:none;} }
+  @keyframes pagein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+  section{padding-block:clamp(48px,7vw,96px);}
+  section.tight{padding-block:clamp(32px,5vw,64px);}
+  .section-head{max-width:640px;margin-bottom:clamp(28px,4vw,44px);}
+  .section-head h2{margin-top:8px;}
+  .section-head p.lede{margin-top:14px;color:var(--ink-soft);font-size:1.05rem;}
+
+  hr.rule{border:none;border-top:1px solid var(--line);margin-block:0;}
+
+  /* ============ HERO ============ */
+  .hero{padding-block:clamp(40px,7vw,80px) clamp(48px,6vw,72px);}
+  .hero-grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:clamp(24px,4vw,56px);align-items:center;}
+  .hero h1{font-size:var(--fs-hero);}
+  .hero h1 .o{color:var(--orange);}
+  .hero h1 .p{color:var(--pine);}
+  .hero .lede{margin-top:20px;max-width:46ch;font-size:1.12rem;color:var(--ink-soft);}
+  .hero .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px;}
+  .hero-badges{display:flex;flex-direction:column;gap:14px;padding:22px;background:var(--paper-raised);border:1px solid var(--line);border-radius:4px;}
+  .hero-badges .row{display:flex;align-items:center;gap:12px;font-family:var(--font-eyebrow);font-weight:600;font-size:0.86rem;letter-spacing:0.02em;}
+  .hero-badges .dot{width:8px;height:8px;border-radius:50%;background:var(--orange);flex:none;}
+  .hero-badges .dot.pine{background:var(--pine);}
+  @media (max-width:820px){ .hero-grid{grid-template-columns:1fr;} }
+
+  /* ============ HERO PHOTO ============ */
+  .hero-photo{position:relative;max-width:420px;margin-inline:auto;}
+  .hero-photo::before{
+    content:"";position:absolute;inset:22px -20px -20px 22px;z-index:0;border-radius:30px;
+    background:linear-gradient(135deg, var(--orange), var(--orange-deep));
+  }
+  .hero-photo-frame{position:relative;z-index:1;border-radius:26px;overflow:hidden;
+    box-shadow:0 30px 60px -20px var(--shadow), 0 0 0 1px var(--line);}
+  .hero-photo-frame img{width:100%;height:100%;object-fit:cover;object-position:center 30%;display:block;aspect-ratio:4/5;}
+  .hero-photo-badge{position:absolute;left:-16px;bottom:-20px;z-index:2;display:flex;align-items:center;gap:12px;
+    background:var(--paper-raised);border:1px solid var(--line);border-radius:16px;padding:12px 18px;
+    box-shadow:0 18px 34px var(--shadow);}
+  .hero-photo-badge strong{font-family:var(--font-display);font-weight:800;font-size:1.7rem;color:var(--ink);line-height:1;}
+  .hero-photo-badge span{display:block;font-family:var(--font-eyebrow);font-size:0.64rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink-soft);margin-top:2px;}
+  .hero-photo-tag{position:absolute;top:14px;right:-14px;z-index:2;background:var(--ink);color:var(--paper);
+    font-family:var(--font-eyebrow);font-size:0.66rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;
+    padding:8px 14px;border-radius:99px;box-shadow:0 10px 20px var(--shadow);}
+  @media (max-width:520px){
+    .hero-photo{max-width:280px;}
+    .hero-photo-badge{left:8px;bottom:-16px;padding:10px 14px;}
+    .hero-photo-badge strong{font-size:1.3rem;}
+  }
+
+  /* ============ TWO-TRACK ============ */
+  .tracks{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,3vw,28px);}
+  .track{
+    position:relative;overflow:hidden;background:var(--paper-raised);padding:clamp(28px,3.4vw,40px);
+    border-radius:18px;border:1px solid var(--line);box-shadow:0 20px 44px var(--shadow);
+  }
+  .track::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;}
+  .track.physical::before{background:linear-gradient(90deg, var(--orange-deep), var(--orange));}
+  .track.mind::before{background:var(--ink);}
+  .track.mind{transform:translateY(clamp(0px,1.5vw,18px));}
+  @media (max-width:820px){ .track.mind{transform:none;} }
+  .track-num{
+    position:absolute;top:-0.15em;right:0.1em;font-family:var(--font-display);font-weight:700;font-style:italic;
+    font-size:7rem;line-height:1;color:var(--ink);opacity:0.05;pointer-events:none;user-select:none;
+  }
+  .track-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;position:relative;}
+  .track-head h3{font-size:var(--fs-h3);}
+  .track.physical .track-head h3{color:var(--orange-deep);}
+  .track.mind .track-head h3{color:var(--ink);}
+  .track-tag{font-family:var(--font-eyebrow);font-weight:700;font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;padding:5px 10px;border-radius:99px;}
+  .track.physical .track-tag{background:var(--orange-tint);color:var(--orange-deep);}
+  .track.mind .track-tag{background:var(--pine-tint);color:var(--pine);}
+  .tlist{display:flex;flex-direction:column;position:relative;}
+  .titem{
+    display:flex;align-items:center;gap:16px;
+    padding-block:15px;border-top:1px solid var(--line);text-decoration:none;color:var(--ink);
+    transition:padding-left .18s ease;
+  }
+  .titem:first-child{border-top:none;}
+  .titem:hover{padding-left:6px;}
+  .titem:hover .tarrow{transform:translateX(2px);background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  .tidx{
+    flex:none;font-family:var(--font-eyebrow);font-weight:600;font-size:0.72rem;color:var(--ink-soft);
+    width:22px;
+  }
+  .titem .ttext{flex:1;}
+  .titem .ttext strong{font-family:var(--font-display);font-weight:700;font-size:1.12rem;display:block;}
+  .titem .ttext span{color:var(--ink-soft);font-size:0.9rem;}
+  .tarrow{
+    flex:none;font-size:1rem;transition:transform .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
+    width:34px;height:34px;border-radius:50%;border:1.5px solid var(--line-strong);display:flex;align-items:center;justify-content:center;
+  }
+  @media (max-width:820px){ .tracks{grid-template-columns:1fr;} }
+
+  /* ============ CREDIBILITY STRIP ============ */
+  .cred{background:var(--paper-raised);color:var(--ink);border-block:1px solid var(--line);}
+  .cred .wrap{padding-block:clamp(28px,4vw,40px);}
+  .cred-eyebrow{color:var(--ink-soft);margin-bottom:18px;display:block;}
+  .cred-row{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+  .cred-item{display:flex;align-items:center;gap:14px;border-left:2px solid var(--orange);padding-left:16px;}
+  .cred-item .logo-plate{flex:none;width:64px;height:64px;border-radius:10px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;padding:8px;box-shadow:0 6px 14px var(--shadow);}
+  .cred-item .logo-plate img{max-width:100%;max-height:100%;object-fit:contain;display:block;}
+  .cred-item .ctext h4{font-family:var(--font-display);font-weight:700;font-size:1.05rem;color:var(--ink);}
+  .cred-item .ctext p{font-size:0.82rem;color:var(--ink-soft);margin-top:2px;}
+  @media (max-width:900px){ .cred-row{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:520px){ .cred-row{grid-template-columns:1fr;} }
+
+  /* ============ CARD GRID (services) ============ */
+  .grid-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .card{
+    background:var(--paper-raised);padding:26px 22px;display:flex;flex-direction:column;gap:14px;
+    text-decoration:none;color:var(--ink);border-radius:14px;border:1px solid var(--line);
+    box-shadow:0 10px 24px var(--shadow);transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+  .card:hover{transform:translateY(-4px);box-shadow:0 18px 34px var(--shadow);border-color:var(--line-strong);}
+  .card .icon{width:40px;height:40px;color:var(--orange-deep);}
+  .card.mindcard .icon{color:var(--pine);}
+  .card h4{font-size:1.15rem;}
+  .card p{color:var(--ink-soft);font-size:0.92rem;}
+  .card .go{margin-top:auto;font-family:var(--font-eyebrow);font-weight:700;font-size:0.76rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--orange-deep);}
+  .card.mindcard .go{color:var(--pine);}
+  @media (max-width:980px){ .grid-cards{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:560px){ .grid-cards{grid-template-columns:1fr;} }
+
+  /* ============ SCHEDULE TABLE ============ */
+  .table-wrap{overflow-x:auto;border:1px solid var(--line);}
+  table.schedule{border-collapse:collapse;width:100%;min-width:760px;background:var(--paper-raised);}
+  table.schedule th, table.schedule td{border:1px solid var(--line);padding:12px 10px;text-align:left;vertical-align:top;}
+  table.schedule thead th{
+    font-family:var(--font-eyebrow);text-transform:uppercase;font-size:0.72rem;letter-spacing:0.1em;
+    color:var(--ink-soft);background:var(--paper);font-weight:700;
+  }
+  table.schedule td.time{font-variant-numeric:tabular-nums;font-family:var(--font-eyebrow);font-weight:600;font-size:0.85rem;color:var(--ink-soft);white-space:nowrap;}
+  .slot{display:inline-block;font-size:0.82rem;font-weight:600;padding:4px 8px;border-radius:3px;margin:0;line-height:1.3;}
+  .slot.o{background:var(--orange-tint);color:var(--orange-deep);}
+  .slot.p{background:var(--pine-tint);color:var(--pine);}
+
+  /* ============ FAQ ============ */
+  .faq-item{border-top:1px solid var(--line);padding-block:20px;}
+  .faq-item:last-child{border-bottom:1px solid var(--line);}
+  .faq-item h4{font-family:var(--font-body);font-weight:700;font-size:1.02rem;margin-bottom:8px;}
+  .faq-item p{color:var(--ink-soft);}
+
+  /* ============ SPLIT (corporate) ============ */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2.5vw,24px);}
+  .split > div{background:var(--paper-raised);padding:clamp(22px,3vw,34px);border-radius:14px;border:1px solid var(--line);box-shadow:0 10px 22px var(--shadow);}
+  .split h3{font-size:var(--fs-h3);margin-bottom:12px;}
+  .split ul{margin:16px 0 0;padding-left:20px;color:var(--ink-soft);}
+  .split li{margin-bottom:8px;}
+  @media (max-width:820px){ .split{grid-template-columns:1fr;} }
+
+  .feature-band{background:linear-gradient(135deg, var(--orange), var(--orange-deep));color:var(--orange-ink);border-radius:18px;box-shadow:0 20px 44px var(--shadow);padding:clamp(24px,3vw,36px);display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;}
+  .feature-band h3{color:var(--orange-ink);font-size:var(--fs-h3);}
+  .feature-band p{margin-top:10px;color:color-mix(in srgb, var(--orange-ink) 88%, transparent);max-width:56ch;}
+  @media (max-width:700px){ .feature-band{grid-template-columns:1fr;} }
+
+  /* ============ CAMP DAY STEPS ============ */
+  .daylist{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;counter-reset:step;}
+  .day{background:var(--paper-raised);padding:24px 20px;border-radius:14px;border:1px solid var(--line);box-shadow:0 10px 22px var(--shadow);}
+  .day .num{font-family:var(--font-display);font-weight:900;font-size:2rem;color:var(--orange-tint);-webkit-text-stroke:1.5px var(--orange-deep);display:block;margin-bottom:8px;}
+  .day h4{font-size:1.02rem;margin-bottom:6px;}
+  .day p{font-size:0.88rem;color:var(--ink-soft);}
+  @media (max-width:900px){ .daylist{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:520px){ .daylist{grid-template-columns:1fr;} }
+
+  /* ============ MEMBERSHIP TIERS ============ */
+  .tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .tier{border:1px solid var(--line);background:var(--paper-raised);border-radius:14px;padding:24px 20px;display:flex;flex-direction:column;gap:14px;box-shadow:0 10px 22px var(--shadow);transition:transform .18s ease;}
+  .tier:hover{transform:translateY(-4px);}
+  .tier.featured{border-color:var(--orange);box-shadow:0 14px 30px var(--shadow), 0 0 0 1.5px var(--orange);}
+  .tier .tname{font-family:var(--font-display);font-weight:800;font-size:1.3rem;}
+  .tier .tnote{font-size:0.82rem;color:var(--ink-soft);}
+  .tier ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;font-size:0.9rem;}
+  .tier li{display:flex;gap:8px;align-items:flex-start;}
+  .tier li svg{flex:none;width:16px;height:16px;margin-top:3px;color:var(--orange-deep);}
+  .tier.featured li svg{color:var(--orange);}
+  .tier .pill{align-self:flex-start;font-family:var(--font-eyebrow);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;background:var(--orange);color:var(--orange-ink);padding:4px 9px;border-radius:99px;font-weight:700;}
+  @media (max-width:980px){ .tiers{grid-template-columns:1fr 1fr;} }
+  @media (max-width:560px){ .tiers{grid-template-columns:1fr;} }
+
+  /* ============ CONTACT ============ */
+  .contact-grid{display:grid;grid-template-columns:0.9fr 1.1fr;gap:clamp(24px,4vw,56px);}
+  .contact-card{background:var(--paper-raised);color:var(--ink);border:1px solid var(--line);border-radius:18px;box-shadow:0 20px 44px var(--shadow);padding:clamp(24px,3vw,34px);display:flex;flex-direction:column;gap:18px;}
+  .contact-card h3{color:var(--ink);}
+  .contact-line{display:flex;flex-direction:column;gap:2px;}
+  .contact-line .l{font-family:var(--font-eyebrow);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-soft);}
+  .contact-line .v{font-size:1.02rem;}
+  .contact-line a{color:var(--orange-deep);text-decoration:none;}
+  .contact-line a:hover{text-decoration:underline;}
+
+  form.enquiry{display:flex;flex-direction:column;gap:16px;}
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field label{font-family:var(--font-eyebrow);font-size:0.74rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-soft);}
+  .field input, .field select, .field textarea{
+    font-family:var(--font-body);font-size:0.98rem;color:var(--ink);background:var(--paper-raised);
+    border:1px solid var(--line-strong);border-radius:3px;padding:11px 12px;
+  }
+  .field textarea{resize:vertical;min-height:100px;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:820px){ .contact-grid{grid-template-columns:1fr;} .row2{grid-template-columns:1fr;} }
+  .formnote{font-size:0.8rem;color:var(--ink-soft);border-top:1px dashed var(--line-strong);padding-top:12px;}
+
+  /* ============ FOOTER ============ */
+  footer.site{background:var(--paper-raised);color:var(--ink);margin-top:0;border-top:3px solid var(--orange);}
+  footer.site .wrap{padding-block:clamp(40px,5vw,60px) 26px;}
+  .foot-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:32px;}
+  .foot-logo-plate{display:inline-flex;padding:0;}
+  .foot-logo{height:52px;width:auto;display:block;}
+  .foot-brand p{margin-top:14px;color:var(--ink-soft);font-size:0.9rem;max-width:34ch;}
+  .foot-col h5{font-family:var(--font-eyebrow);text-transform:uppercase;letter-spacing:0.1em;font-size:0.76rem;color:var(--ink-soft);margin-bottom:14px;}
+  .foot-col a{display:block;color:var(--ink);text-decoration:none;font-size:0.92rem;padding-block:5px;opacity:0.85;}
+  .foot-col a:hover{opacity:1;text-decoration:underline;color:var(--orange-deep);}
+  .foot-bottom{margin-top:36px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:0.8rem;color:var(--ink-soft);}
+  @media (max-width:820px){ .foot-grid{grid-template-columns:1fr 1fr;} }
+  @media (max-width:520px){ .foot-grid{grid-template-columns:1fr;} }
+
+  .kicker-strip{background:var(--orange);color:var(--orange-ink);}
+  .kicker-strip .wrap{padding-block:clamp(28px,4vw,40px);display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+  .kicker-strip h3{color:var(--orange-ink);font-size:var(--fs-h3);}
+  .kicker-strip .btn-ghost{border-color:color-mix(in srgb, var(--orange-ink) 60%, transparent);color:var(--orange-ink);}
+  .kicker-strip .btn-ghost:hover{border-color:var(--orange-ink);}
+
+  .founder{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;}
+  .founder .avatar{
+    width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg, var(--orange), var(--orange-deep));color:var(--orange-ink);
+    display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:1.8rem;flex:none;
+  }
+  .founder h4{font-size:1.3rem;}
+  .founder .role{font-family:var(--font-eyebrow);font-size:0.8rem;letter-spacing:0.06em;color:var(--pine);text-transform:uppercase;font-weight:700;margin-top:2px;}
+  .founder p.quote{margin-top:12px;color:var(--ink-soft);max-width:60ch;}
+  @media (max-width:560px){ .founder{grid-template-columns:1fr;text-align:left;} }
+
+  .pagehero{padding-block:clamp(36px,6vw,64px) clamp(28px,4vw,40px);}
+  .pagehero h1{font-size:var(--fs-h2);margin-top:8px;}
+  .pagehero p.lede{margin-top:16px;max-width:60ch;color:var(--ink-soft);font-size:1.05rem;}
+
+  .badge-inline{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-eyebrow);font-weight:700;font-size:0.78rem;letter-spacing:0.06em;text-transform:uppercase;background:var(--pine-tint);color:var(--pine);padding:6px 12px;border-radius:99px;}
+
+  /* ============ ILLUSTRATED PICTOGRAMS (3D-shaded figures) ============ */
+  .aura{transform-origin:100px 100px;animation:auraPulse 4.5s ease-in-out infinite;}
+  .aura-2{animation-delay:0.7s;}
+  @keyframes auraPulse{0%,100%{transform:scale(1);opacity:0.22;}50%{transform:scale(1.08);opacity:0.4;}}
+  @media (prefers-reduced-motion: reduce){ .aura{animation:none;} }
+  .pagehero-split{display:grid;grid-template-columns:1fr auto;gap:clamp(20px,4vw,48px);align-items:center;}
+  .pagehero-split .pfig{width:220px;justify-self:end;}
+  .pagehero-split .pphoto{width:min(320px,42vw);justify-self:end;border-radius:16px;overflow:hidden;box-shadow:0 22px 40px var(--shadow);}
+  .pagehero-split .pphoto img{width:100%;height:100%;object-fit:cover;display:block;aspect-ratio:4/5;}
+  @media (max-width:760px){ .pagehero-split{grid-template-columns:1fr;} .pagehero-split .pfig{justify-self:center;width:170px;order:-1;} .pagehero-split .pphoto{justify-self:center;width:min(280px,70vw);order:-1;} }
+
+  .photo-strip{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-block:clamp(20px,4vw,40px);}
+  .photo-strip figure{margin:0;position:relative;border-radius:14px;overflow:hidden;box-shadow:0 14px 28px var(--shadow);aspect-ratio:4/3;}
+  .photo-strip img{width:100%;height:100%;object-fit:cover;display:block;}
+  .photo-strip figcaption{
+    position:absolute;left:0;right:0;bottom:0;padding:10px 14px;
+    font-family:var(--font-eyebrow);font-weight:600;font-size:0.72rem;letter-spacing:0.05em;text-transform:uppercase;
+    color:#fff;background:linear-gradient(0deg, rgba(0,0,0,0.65), rgba(0,0,0,0));
+  }
+  @media (max-width:760px){ .photo-strip{grid-template-columns:1fr 1fr;} .photo-strip figure:first-child{grid-column:1 / -1;} }
+  @media (max-width:460px){ .photo-strip{grid-template-columns:1fr;} }
+  .photo-strip .reveal:nth-child(1){transition-delay:0ms;} .photo-strip .reveal:nth-child(2){transition-delay:100ms;} .photo-strip .reveal:nth-child(3){transition-delay:200ms;}
+
+  /* ============ SCROLL REVEAL ============ */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s cubic-bezier(.16,.8,.3,1), transform .6s cubic-bezier(.16,.8,.3,1);}
+  .reveal.is-in{opacity:1;transform:none;}
+  @media (prefers-reduced-motion: reduce){ .reveal{opacity:1;transform:none;transition:none;} }
+  .grid-cards .reveal:nth-child(1){transition-delay:0ms;} .grid-cards .reveal:nth-child(2){transition-delay:60ms;}
+  .grid-cards .reveal:nth-child(3){transition-delay:120ms;} .grid-cards .reveal:nth-child(4){transition-delay:180ms;}
+  .grid-cards .reveal:nth-child(5){transition-delay:240ms;} .grid-cards .reveal:nth-child(6){transition-delay:300ms;}
+  .grid-cards .reveal:nth-child(7){transition-delay:360ms;} .grid-cards .reveal:nth-child(8){transition-delay:420ms;}
+  .tiers .reveal:nth-child(1){transition-delay:0ms;} .tiers .reveal:nth-child(2){transition-delay:80ms;}
+  .tiers .reveal:nth-child(3){transition-delay:160ms;} .tiers .reveal:nth-child(4){transition-delay:240ms;}
+  .daylist .reveal:nth-child(1){transition-delay:0ms;} .daylist .reveal:nth-child(2){transition-delay:80ms;}
+  .daylist .reveal:nth-child(3){transition-delay:160ms;} .daylist .reveal:nth-child(4){transition-delay:240ms;}
+  .cred-row .reveal:nth-child(1){transition-delay:0ms;} .cred-row .reveal:nth-child(2){transition-delay:100ms;}
+  .cred-row .reveal:nth-child(3){transition-delay:200ms;} .cred-row .reveal:nth-child(4){transition-delay:300ms;}
+  .class-grid .reveal:nth-child(1){transition-delay:0ms;} .class-grid .reveal:nth-child(2){transition-delay:50ms;}
+  .class-grid .reveal:nth-child(3){transition-delay:100ms;} .class-grid .reveal:nth-child(4){transition-delay:150ms;}
+  .class-grid .reveal:nth-child(5){transition-delay:200ms;} .class-grid .reveal:nth-child(6){transition-delay:250ms;}
+
+  /* ============ ICON TILES (duotone) ============ */
+  .icon-tile{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg, var(--orange-tint), var(--orange));color:var(--orange-ink);flex:none;}
+  .icon-tile svg{width:22px;height:22px;}
+  .icon-tile.p{background:linear-gradient(135deg, var(--pine-tint), var(--pine));color:var(--pine-ink);}
+
+  /* ============ SERVICES: tabs + banner + cards ============ */
+  .svc-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px;}
+  .svc-tab{font-family:var(--font-eyebrow);font-weight:700;font-size:0.8rem;letter-spacing:0.04em;text-transform:uppercase;padding:10px 18px;border-radius:99px;border:1.5px solid var(--line-strong);background:transparent;color:var(--ink-soft);cursor:pointer;transition:all .15s ease;}
+  .svc-tab:hover{border-color:var(--ink);color:var(--ink);}
+  .svc-tab.is-active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  .svc-panel{display:none;}
+  .svc-panel.is-active{display:block;}
+  .svc-banner{position:relative;border-radius:20px;overflow:hidden;box-shadow:0 20px 44px var(--shadow);margin-bottom:28px;min-height:240px;display:flex;align-items:center;isolation:isolate;}
+  .svc-banner.svc-banner-orange{background:linear-gradient(135deg, var(--orange), var(--orange-deep));}
+  .svc-banner.svc-banner-pine{background:linear-gradient(135deg, var(--pine), var(--pine-deep));}
+  .svc-badge{position:absolute;top:50%;right:clamp(16px,5vw,64px);transform:translateY(-50%);z-index:2;width:clamp(120px,15vw,180px);height:clamp(120px,15vw,180px);filter:drop-shadow(0 18px 28px rgba(0,0,0,0.35));}
+  .svc-badge svg{width:100%;height:100%;display:block;}
+  .svc-banner-text{position:relative;z-index:1;padding:clamp(22px,3vw,34px);max-width:58%;}
+  .svc-banner.svc-banner-orange .svc-banner-text{color:var(--orange-ink);}
+  .svc-banner.svc-banner-orange .svc-banner-text .eyebrow{color:var(--orange-ink);opacity:0.8;}
+  .svc-banner.svc-banner-orange .svc-banner-text h3{color:var(--orange-ink);}
+  .svc-banner.svc-banner-orange .svc-banner-text p{color:color-mix(in srgb, var(--orange-ink) 88%, transparent);}
+  .svc-banner.svc-banner-pine .svc-banner-text{color:var(--pine-ink);}
+  .svc-banner.svc-banner-pine .svc-banner-text .eyebrow{color:var(--pine-ink);opacity:0.8;}
+  .svc-banner.svc-banner-pine .svc-banner-text h3{color:var(--pine-ink);}
+  .svc-banner.svc-banner-pine .svc-banner-text p{color:color-mix(in srgb, var(--pine-ink) 88%, transparent);}
+  .svc-banner-text h3{font-size:var(--fs-h3);margin-top:6px;}
+  .svc-banner-text p{margin-top:8px;max-width:44ch;font-size:0.98rem;}
+  @media (max-width:700px){
+    .svc-banner{flex-direction:column-reverse;align-items:stretch;min-height:0;padding-top:104px;}
+    .svc-badge{top:16px;right:50%;transform:translate(50%,0);width:80px;height:80px;}
+    .svc-banner-text{max-width:100%;}
+  }
+  .svc-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(230px,1fr));gap:16px;}
+  .svc-card{position:relative;background:var(--paper-raised);border:1px solid var(--line);border-radius:14px;padding:22px 20px;box-shadow:0 10px 22px var(--shadow);transition:transform .18s ease, box-shadow .18s ease;}
+  .svc-card:hover{transform:translateY(-4px);box-shadow:0 18px 34px var(--shadow);}
+  .svc-card .icon-tile{margin-bottom:14px;}
+  .svc-card h4{font-size:1.05rem;}
+  .svc-card p{margin-top:8px;color:var(--ink-soft);font-size:0.92rem;}
+
+  /* ============ HERO: animated blobs + app preview ============ */
+  .hero{position:relative;overflow:hidden;}
+  .hero-blobs{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+  .hero-blobs span{position:absolute;border-radius:50%;filter:blur(70px);opacity:0.45;}
+  .hero-blobs span.b1{width:440px;height:440px;background:var(--orange-tint);top:-180px;left:-120px;animation:float1 22s ease-in-out infinite;}
+  .hero-blobs span.b2{width:380px;height:380px;background:var(--pine-tint);bottom:-160px;right:-100px;animation:float2 26s ease-in-out infinite;}
+  @keyframes float1{0%,100%{transform:translate(0,0);}50%{transform:translate(50px,30px);}}
+  @keyframes float2{0%,100%{transform:translate(0,0);}50%{transform:translate(-40px,-40px);}}
+  @media (prefers-reduced-motion: reduce){ .hero-blobs span{animation:none;} }
+  .hero-grid{position:relative;z-index:1;}
+
+  .trust-row{display:flex;flex-wrap:wrap;gap:10px 24px;margin-top:26px;}
+  .trust-row .item{display:flex;align-items:center;gap:8px;font-family:var(--font-eyebrow);font-weight:600;font-size:0.78rem;letter-spacing:0.02em;color:var(--ink-soft);}
+  .trust-row .dot{width:7px;height:7px;border-radius:50%;background:var(--orange);flex:none;}
+  .trust-row .dot.pine{background:var(--pine);}
+
+  .app-preview{display:flex;flex-direction:column;align-items:center;gap:14px;}
+  .app-preview-frame{
+    width:min(280px, 100%);aspect-ratio:9/18;background:var(--ink);border-radius:34px;padding:14px 12px;
+    box-shadow:0 30px 60px -20px var(--shadow), 0 0 0 1px var(--line-strong);
+    animation:bob 6s ease-in-out infinite;
+  }
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+  @media (prefers-reduced-motion: reduce){ .app-preview-frame{animation:none;} }
+  .app-preview-notch{width:70px;height:8px;border-radius:99px;background:color-mix(in srgb, var(--paper) 25%, transparent);margin:0 auto 10px;}
+  .app-preview-screen{background:var(--paper-raised);border-radius:22px;height:calc(100% - 26px);display:flex;flex-direction:column;padding:16px 14px;gap:12px;overflow:hidden;}
+  .app-top{display:flex;align-items:center;justify-content:space-between;}
+  .app-title{font-family:var(--font-display);font-weight:800;font-size:1.1rem;}
+  .app-badge{font-family:var(--font-eyebrow);font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;background:var(--orange-tint);color:var(--orange-deep);padding:3px 8px;border-radius:99px;}
+  .app-chips{display:flex;gap:8px;}
+  .app-chip{font-family:var(--font-eyebrow);font-size:0.7rem;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;padding:6px 12px;border-radius:99px;border:1px solid var(--line-strong);background:transparent;color:var(--ink-soft);cursor:pointer;}
+  .app-chip.is-active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  .app-list{display:flex;flex-direction:column;gap:9px;flex:1;overflow:hidden;}
+  .app-card{display:flex;align-items:center;gap:10px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:9px;}
+  .app-card[hidden]{display:none;}
+  .app-thumb{width:36px;height:36px;border-radius:9px;flex:none;background:linear-gradient(135deg, var(--orange-tint), var(--orange));}
+  .app-thumb.p{background:linear-gradient(135deg, var(--pine-tint), var(--pine));}
+  .app-card-text{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .app-card-text strong{font-size:0.84rem;}
+  .app-card-text span{font-size:0.7rem;color:var(--ink-soft);}
+  .app-nav{display:flex;justify-content:center;gap:10px;padding-top:6px;border-top:1px solid var(--line);font-size:0.6rem;color:var(--line-strong);}
+  .app-navicon.is-active{color:var(--orange);}
+  .app-preview-caption{font-family:var(--font-eyebrow);font-size:0.74rem;text-align:center;color:var(--ink-soft);max-width:26ch;letter-spacing:0.02em;}
+
+  /* ============ INTERACTIVE CLASS BROWSER ============ */
+  .cb-chips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px;}
+  .cb-chip{font-family:var(--font-eyebrow);font-weight:700;font-size:0.8rem;letter-spacing:0.04em;text-transform:uppercase;padding:9px 16px;border-radius:99px;border:1.5px solid var(--line-strong);background:transparent;color:var(--ink-soft);cursor:pointer;transition:all .15s ease;}
+  .cb-chip:hover{border-color:var(--ink);color:var(--ink);}
+  .cb-chip.is-active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  .class-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .class-card{
+    display:flex;flex-direction:column;align-items:flex-start;gap:12px;text-align:left;
+    background:var(--paper-raised);border:1px solid var(--line);border-radius:14px;padding:20px;
+    cursor:pointer;transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    font-family:inherit;color:inherit;width:100%;box-shadow:0 10px 22px var(--shadow);
+  }
+  .class-card:hover, .class-card:focus-visible{transform:translateY(-4px);border-color:var(--line-strong);box-shadow:0 18px 34px var(--shadow);}
+  .class-card[hidden]{display:none;}
+  .cc-text{display:flex;flex-direction:column;gap:4px;}
+  .cc-text strong{font-family:var(--font-display);font-weight:700;font-size:1.1rem;}
+  .cc-text span{font-size:0.86rem;color:var(--ink-soft);}
+  .cc-spots{font-family:var(--font-eyebrow);font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;font-weight:700;color:var(--orange-deep);background:var(--orange-tint);padding:4px 9px;border-radius:99px;}
+  .class-card.mindcard .cc-spots{color:var(--pine);background:var(--pine-tint);}
+  @media (max-width:900px){ .class-grid{grid-template-columns:1fr 1fr;} }
+  @media (max-width:560px){ .class-grid{grid-template-columns:1fr;} }
+
+  .cb-overlay{position:fixed;inset:0;background:rgba(10,8,5,0.45);opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:60;}
+  .cb-overlay.is-open{opacity:1;pointer-events:auto;}
+  .cb-drawer{
+    position:fixed;top:0;right:0;bottom:0;width:min(400px,92vw);
+    background:var(--paper);border-left:1px solid var(--line-strong);
+    padding:28px 26px;padding-top:calc(28px + env(safe-area-inset-top,0px));
+    transform:translateX(100%);transition:transform .3s ease;z-index:61;overflow-y:auto;
+  }
+  .cb-drawer.is-open{transform:translateX(0);}
+  .cb-close{position:absolute;top:20px;right:20px;width:34px;height:34px;border-radius:50%;border:1px solid var(--line-strong);background:transparent;font-size:1.3rem;line-height:1;cursor:pointer;color:var(--ink);}
+  .cb-close:hover{background:var(--line);}
+  .cb-slots{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;}
+  .cb-slot{font-family:var(--font-eyebrow);font-weight:700;font-size:0.82rem;padding:9px 14px;border-radius:6px;border:1.5px solid var(--line-strong);background:var(--paper-raised);color:var(--ink);cursor:pointer;transition:all .15s ease;}
+  .cb-slot:hover{border-color:var(--ink);}
+  .cb-slot.is-selected{background:var(--orange);border-color:var(--orange);color:var(--orange-ink);}
+  .cb-drawer .btn[disabled]{opacity:0.5;cursor:not-allowed;}
+</style>
+
+<div class="announce">School Holiday Camp registration for Nov&ndash;Dec 2026 is open &mdash; <a href="#camps">reserve a spot</a></div>
+
+<header class="site">
+  <div class="navrow">
+    <a href="#home" class="brand" data-link="home">
+      <img class="brand-logo" src="assets/img/pegasus-logo-trim.png" alt="Pegasus Boxing Club">
+    </a>
+    <nav class="primary" id="primaryNav">
+      <a href="#home" data-link="home">Home</a>
+      <a href="#services" data-link="services">Services</a>
+      <a href="#schedule" data-link="schedule">Schedule</a>
+      <a href="#counseling" data-link="counseling">Counselling</a>
+      <a href="#corporate" data-link="corporate">Corporate</a>
+      <a href="#camps" data-link="camps">Camps</a>
+      <a href="#memberships" data-link="memberships">Memberships</a>
+      <a href="#contact" data-link="contact">Contact</a>
+      <div class="navctas drawer-ctas" style="margin-top:18px;">
+        <a class="btn btn-ghost small" href="https://psas-shop.web.app" target="_blank" rel="noopener">Member Login</a>
+        <a class="btn btn-orange small" href="https://psas-shop.web.app" target="_blank" rel="noopener">Book a Class</a>
+      </div>
+    </nav>
+    <div class="navctas">
+      <a class="btn btn-ghost small" href="https://psas-shop.web.app" target="_blank" rel="noopener">Member Login</a>
+      <a class="btn btn-orange small" href="https://psas-shop.web.app" target="_blank" rel="noopener">Book a Class</a>
+      <button class="navtoggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ================= HOME ================= -->
+<section class="page" id="page-home">
+  <div class="hero wrap">
+    <div class="hero-blobs" aria-hidden="true"><span class="b1"></span><span class="b2"></span></div>
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">Pegasus Sports &amp; Mental Wellbeing Academy · Singapore</p>
+        <h1>TRAIN THE <span class="o">BODY</span>.<br>COACH THE <span class="p">MIND</span>.</h1>
+        <p class="lede">Boxing, sport psychology and counselling under one roof &mdash; the only Singapore academy built to train athletic performance and mental resilience side by side.</p>
+        <div class="ctas">
+          <a class="btn btn-orange" href="https://psas-shop.web.app" target="_blank" rel="noopener">Book a Class</a>
+          <a class="btn btn-pine" href="#counseling">Talk to a Counsellor</a>
+        </div>
+        <div class="trust-row">
+          <span class="item"><span class="dot"></span>National Registry of Coaches</span>
+          <span class="item"><span class="dot pine"></span>IACT-registered therapists</span>
+          <span class="item"><span class="dot"></span>MOE-registered instructors</span>
+        </div>
+      </div>
+      <div class="hero-photo">
+        <span class="hero-photo-tag">Train with us</span>
+        <div class="hero-photo-frame">
+          <img src="assets/img/hero-boxer.jpg" alt="Pegasus member training in boxing headgear and gloves" loading="eager">
+        </div>
+        <div class="hero-photo-badge"><strong>1:1</strong><span>Boxing &amp; mindset<br>coaching</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="photo-strip">
+      <figure class="reveal"><img src="assets/img/class-photo-4.jpg" alt="Pegasus members and coaches posing together after a boxing session" loading="lazy"><figcaption>Our members, this week</figcaption></figure>
+      <figure class="reveal"><img src="assets/img/class-photo-2.jpg" alt="Adult boxing class training on the studio floor" loading="lazy"><figcaption>Boxing &amp; conditioning</figcaption></figure>
+      <figure class="reveal"><img src="assets/img/class-photo-1.jpg" alt="Children holding medals and certificates after a school holiday camp" loading="lazy"><figcaption>School Holiday Camp</figcaption></figure>
+    </div>
+  </div>
+
+  <section class="tight">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">One academy, two disciplines</p>
+        <h2>Everything trains together here.</h2>
+      </div>
+      <div class="tracks">
+        <div class="track physical reveal">
+          <span class="track-num">01</span>
+          <div class="track-head"><h3>Physical</h3><span class="track-tag">Body</span></div>
+          <div class="tlist">
+            <a class="titem" href="#schedule"><span class="tidx">01</span><span class="ttext"><strong>Boxing &amp; Group Classes</strong><span>Fundamentals, pad work, sparring &amp; conditioning for all levels.</span></span><span class="tarrow">&rarr;</span></a>
+            <a class="titem" href="#services"><span class="tidx">02</span><span class="ttext"><strong>Nutrition Coaching</strong><span>Fuelling plans built around your training load and goals.</span></span><span class="tarrow">&rarr;</span></a>
+            <a class="titem" href="#camps"><span class="tidx">03</span><span class="ttext"><strong>School Holiday Camps</strong><span>Boxing skills and mindset work for primary &amp; secondary students.</span></span><span class="tarrow">&rarr;</span></a>
+          </div>
+        </div>
+        <div class="track mind reveal">
+          <span class="track-num">02</span>
+          <div class="track-head"><h3>Mind</h3><span class="track-tag">Mental</span></div>
+          <div class="tlist">
+            <a class="titem" href="#counseling"><span class="tidx">01</span><span class="ttext"><strong>Counselling &amp; Psychotherapy</strong><span>Confidential 1:1 sessions, in-person or online.</span></span><span class="tarrow">&rarr;</span></a>
+            <a class="titem" href="#services"><span class="tidx">02</span><span class="ttext"><strong>Sport &amp; Performance Psychology</strong><span>Mental skills training for competition and pressure.</span></span><span class="tarrow">&rarr;</span></a>
+            <a class="titem" href="#corporate"><span class="tidx">03</span><span class="ttext"><strong>Corporate &amp; School Programmes</strong><span>Resilience workshops and MOE-registered enrichment.</span></span><span class="tarrow">&rarr;</span></a>
+            <a class="titem" href="#corporate"><span class="tidx">04</span><span class="ttext"><strong>Leadership &amp; Presentation Training</strong><span>Composure and command under pressure, coached like a skill.</span></span><span class="tarrow">&rarr;</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cred">
+    <div class="wrap">
+      <span class="eyebrow cred-eyebrow">Registered &amp; recognised</span>
+      <div class="cred-row">
+        <div class="cred-item reveal">
+          <span class="logo-plate"><img src="assets/img/iact-logo.jpg" alt="IACT — International Association of Counselors and Therapists logo" loading="lazy"></span>
+          <span class="ctext"><h4>IACT</h4><p>Registered counsellors &amp; therapists.</p></span>
+        </div>
+        <div class="cred-item reveal">
+          <span class="logo-plate"><img src="assets/img/moe-logo.jpg" alt="Ministry of Education Singapore logo" loading="lazy"></span>
+          <span class="ctext"><h4>MOE Singapore</h4><p>Registered co-curricular &amp; enrichment vendor.</p></span>
+        </div>
+        <div class="cred-item reveal">
+          <span class="logo-plate"><img src="assets/img/nroc-logo.jpg" alt="National Registry of Coaches Singapore logo" loading="lazy"></span>
+          <span class="ctext"><h4>NROC</h4><p>Coaches certified nationally.</p></span>
+        </div>
+        <div class="cred-item reveal">
+          <span class="logo-plate"><img src="assets/img/sbf-logo.jpg" alt="Singapore Boxing Federation logo" loading="lazy"></span>
+          <span class="ctext"><h4>SBF</h4><p>Affiliated with Singapore Boxing Federation.</p></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <div class="founder reveal">
+        <div class="avatar">SK</div>
+        <div>
+          <p class="eyebrow">Led by</p>
+          <h4>Sarath Kumar Manimaran</h4>
+          <p class="role">Founder &amp; Head Coach</p>
+          <p class="quote">Pegasus was built on one idea: the discipline that gets you through the twelfth round is the same discipline that gets you through exam season, a hard conversation, or a high-stakes presentation. We coach both sides on purpose.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="kicker-strip">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow on-orange" style="color:var(--orange-ink);opacity:.8;">Memberships &amp; package deals</p>
+        <h3>Not sure where to start?</h3>
+      </div>
+      <a class="btn btn-ghost" href="#memberships">Compare membership options</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SERVICES ================= -->
+<section class="page" id="page-services">
+  <div class="pagehero wrap">
+    <p class="eyebrow">Our Services</p>
+    <h1>Nineteen services, five disciplines, one academy.</h1>
+    <p class="lede">Boxing, psychology, nutrition, school enrichment and corporate wellbeing &mdash; browse by category below. Coaches and therapists work together behind the scenes on every case.</p>
+  </div>
+  <div class="wrap">
+    <div class="svc-tabs" role="tablist">
+      <button class="svc-tab is-active" data-svc="boxing" type="button">Boxing</button>
+      <button class="svc-tab" data-svc="psychology" type="button">Psychology</button>
+      <button class="svc-tab" data-svc="nutrition" type="button">Nutrition</button>
+      <button class="svc-tab" data-svc="schools" type="button">Schools</button>
+      <button class="svc-tab" data-svc="corporate" type="button">Corporate</button>
+    </div>
+
+    <div class="svc-panel is-active" data-svc-panel="boxing">
+      <div class="svc-banner svc-banner-orange">
+        <span class="svc-badge">
+          <svg viewBox="0 0 100 100" aria-hidden="true">
+            <ellipse cx="50" cy="94" rx="32" ry="6" fill="rgba(0,0,0,0.22)"/>
+            <circle cx="50" cy="48" r="42" fill="#fff"/>
+            <ellipse cx="36" cy="30" rx="14" ry="9" fill="var(--orange-tint)" opacity="0.5"/>
+            <g fill="none" stroke="var(--orange-deep)" stroke-width="5" stroke-linecap="round">
+              <circle cx="40" cy="52" r="18"/>
+              <circle cx="66" cy="38" r="10"/>
+            </g>
+          </svg>
+        </span>
+        <div class="svc-banner-text">
+          <p class="eyebrow">Physical &middot; Body</p>
+          <h3>Boxing</h3>
+          <p>From first-timers to competitive fighters &mdash; every class is coached for the level and goal in the room.</p>
+        </div>
+      </div>
+      <div class="svc-grid">
+        <div class="svc-card reveal">
+          <span class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="12" r="6"/><circle cx="17" cy="9" r="3.2"/></svg></span>
+          <h4>Competitive Fighters</h4>
+          <p>Training for fighters in specific weight classes, sharpening diverse styles and techniques for titles from recognised organisations.</p>
+        </div>
+        <div class="svc-card reveal">
+          <span class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10Z"/></svg></span>
+          <h4>Recreational Boxing</h4>
+          <p>A non-competitive form of the sport focused on fitness, skill development and stress relief &mdash; training routines, sparring for fun, and fitness-oriented workouts.</p>
+        </div>
+        <div class="svc-card reveal">
+          <span class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg></span>
+          <h4>Seniors Fitness &ndash; Boxing</h4>
+          <p>Cardiovascular health, strength and balance through tailored workouts, fostering overall wellbeing for members aged 55 and above.</p>
+        </div>
+        <div class="svc-card reveal">
+          <span class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l2.4 5 5.6.5-4.2 3.7 1.3 5.5L12 15l-5.1 2.7 1.3-5.5L4 8.5l5.6-.5Z"/></svg></span>
+          <h4>Kids Boxing</h4>
+          <p>Basic techniques in a safe, supervised environment, emphasising discipline, coordination and fitness while building confidence.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="svc-panel" data-svc-panel="psychology" hidden>
+      <div class="svc-banner svc-banner-pine">
+        <span class="svc-badge">
+          <svg viewBox="0 0 100 100" aria-hidden="true">
+            <ellipse cx="50" cy="94" rx="32" ry="6" fill="rgba(0,0,0,0.28)"/>
+            <circle cx="50" cy="48" r="42" fill="#fff"/>
+            <ellipse cx="36" cy="30" rx="14" ry="9" fill="var(--pine-tint)" opacity="0.6"/>
+            <path d="M32 42h36v22l-14 12v-12H32Z" fill="none" stroke="var(--pine)" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <div class="svc-banner-text">
+          <p class="eyebrow">Mental &middot; Mind</p>
+          <h3>Psychology</h3>
+          <p>Confidential, IACT-registered support &mdash; for stress, performance blocks, and everything in between.</p>
+        </div>
+      </div>
+      <div class="svc-grid">
+        <div class="svc-card reveal">
+          <span class="icon-tile p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16v10H9l-4 4V5Z"/></svg></span>
+          <h4>PsychoTherapy</h4>
+          <p>Helping individuals explore and address emotional challenges, mental health issues and behavioural patterns, to improve overall wellbeing.</p>
+        </div>
+        <div class="svc-card reveal">
+          <span class="icon-tile p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/></svg></span>
+          <h4>HypnoTherapy</h4>
+          <p>A trained therapist guides individuals in addressing issues such as stress, anxiety and behaviour modification.</p>
+        </div>
+        <div class="svc-card reveal">
+          <span class="icon-tile p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.6" fill="currentColor"/></svg></span>
+          <h4>Performance Coaching</h4>
+          <p>A collaborative process where a coach works with individuals or teams to enhance skills, set goals and maximise potential.</p>
+        </div>
+        <div class="svc-card reveal">
+          <span class="icon-tile p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/></svg></span>
+          <h4>Sports Psychology</h4>
+          <p>Focused on the mental side of athletic performance &mdash; motivation, confidence, concentration and resilience under pressure.</p>
+        </div>
+        <div class="svc-card reveal">
+          <span class="icon-tile p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16v10H9l-4 4V5Z"/></svg></span>
+          <h4>Counselling</h4>
+          <p>A support process where professionals help individuals or groups address emotional and psychological challenges toward personal growth.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="svc-panel" data-svc-panel="nutrition" hidden>
+      <div class="svc-banner svc-banner-orange">
+        <span class="svc-badge">
+          <svg viewBox="0 0 100 100" aria-hidden="true">
+            <ellipse cx="50" cy="94" rx="32" ry="6" fill="rgba(0,0,0,0.15)"/>
+            <circle cx="50" cy="48" r="42" fill="#fff"/>
+            <path d="M50 32c4-8 14-10 18-4" fill="none" stroke="var(--orange-deep)" stroke-width="5" stroke-linecap="round"/>
+            <path d="M50 32c9 1 16 9 16 20 0 12-9 20-16 20s-16-8-16-20c0-11 7-19 16-20Z" fill="var(--orange-deep)"/>
+            <ellipse cx="38" cy="42" rx="6" ry="9" fill="#fff" opacity="0.28"/>
+          </svg>
+        </span>
+        <div class="svc-banner-text">
+          <p class="eyebrow">Physical &middot; Body</p>
+          <h3>Nutrition</h3>
+          <p>Fuelling plans, products and consultations built around your training load and goals.</p>
+        </div>
+      </div>
+      <div class="svc-grid">
+        <div class="svc-card reveal">
+          <span class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3c3.5 1 5 4.5 3.8 8.3C15 14 12.8 15.5 12 19c-.8-3.5-3-5-3.8-7.7C7 7.5 8.5 4 12 3Z"/></svg></span>
+          <h4>Nutrition Plans</h4>
+          <p>Personalised dietary guidance to support health, fitness goals and specific nutritional needs.</p>
+        </div>
+        <div class="svc-card reveal">
+          <span class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6M10 3v3.5L7 10v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V10l-3-3.5V3"/></svg></span>
+          <h4>Nutrition Products</h4>
+          <p>A range of food supplements, vitamins and dietary items to enhance intake, address deficiencies or support wellness goals.</p>
+        </div>
+        <div class="svc-card reveal">
+          <span class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="M9 12l2 2 4-4"/></svg></span>
+          <h4>Nutrition Consultation</h4>
+          <p>Personalised guidance to assess and improve dietary habits, supporting individuals in achieving health and wellness goals.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="svc-panel" data-svc-panel="schools" hidden>
+      <div class="svc-banner svc-banner-pine">
+        <span class="svc-badge">
+          <svg viewBox="0 0 100 100" aria-hidden="true">
+            <ellipse cx="50" cy="94" rx="32" ry="6" fill="rgba(0,0,0,0.28)"/>
+            <circle cx="50" cy="48" r="42" fill="#fff"/>
+            <ellipse cx="36" cy="30" rx="14" ry="9" fill="var(--pine-tint)" opacity="0.6"/>
+            <g fill="none" stroke="var(--pine)" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M50 38c-6-4-14-4-19 0v22c5-4 13-4 19 0"/>
+              <path d="M50 38c6-4 14-4 19 0v22c-5-4-13-4-19 0"/>
+              <path d="M50 38v22"/>
+            </g>
+          </svg>
+        </span>
+        <div class="svc-banner-text">
+          <p class="eyebrow">Students &amp; Teachers</p>
+          <h3>Schools</h3>
+          <p>MOE-registered co-curricular and enrichment programmes that pair physical skill with character education.</p>
+        </div>
+      </div>
+      <div class="svc-grid">
+        <div class="svc-card reveal">
+          <span class="icon-tile p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 20l4-11h6l4 11"/><path d="M9 9V5a3 3 0 0 1 6 0v4"/></svg></span>
+          <h4>Acting</h4>
+          <p>The art of portraying characters through performance, using voice, body language and emotion in theatre, film or television.</p>
+        </div>
+        <div class="svc-card reveal">
+          <span class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="12" r="6"/><circle cx="17" cy="9" r="3.2"/></svg></span>
+          <h4>Boxing</h4>
+          <p>A combat sport where opponents throw punches to score points or achieve knockouts, regulated by weight classes for fair competition.</p>
+        </div>
+        <div class="svc-card reveal">
+          <span class="icon-tile p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 20l4-11h6l4 11"/><path d="M9 9V5a3 3 0 0 1 6 0v4"/></svg></span>
+          <h4>Drama</h4>
+          <p>A genre exploring human emotions and conflicts, emphasising character development and compelling storytelling.</p>
+        </div>
+        <div class="svc-card reveal">
+          <span class="icon-tile p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></span>
+          <h4>Leadership / Performance Management</h4>
+          <p>Guiding teams by fostering motivation, while setting expectations, providing feedback and enhancing outcomes.</p>
+        </div>
+        <div class="svc-card reveal">
+          <span class="icon-tile p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.6" fill="currentColor"/></svg></span>
+          <h4>Psychology</h4>
+          <p>Studying the mind and behaviour, examining thoughts, emotions and actions through scientific research and observation.</p>
+        </div>
+        <div class="svc-card reveal">
+          <span class="icon-tile p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg></span>
+          <h4>Public Speaking</h4>
+          <p>Delivering a speech or presentation to an audience, emphasising effective communication, clarity and engagement.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="svc-panel" data-svc-panel="corporate" hidden>
+      <div class="svc-banner svc-banner-orange">
+        <span class="svc-badge">
+          <svg viewBox="0 0 100 100" aria-hidden="true">
+            <ellipse cx="50" cy="94" rx="32" ry="6" fill="rgba(0,0,0,0.22)"/>
+            <circle cx="50" cy="48" r="42" fill="#fff"/>
+            <ellipse cx="36" cy="30" rx="14" ry="9" fill="var(--orange-tint)" opacity="0.5"/>
+            <g fill="none" stroke="var(--orange-deep)" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+              <rect x="30" y="42" width="40" height="26" rx="4"/>
+              <path d="M40 42v-6a4 4 0 0 1 4-4h12a4 4 0 0 1 4 4v6"/>
+            </g>
+          </svg>
+        </span>
+        <div class="svc-banner-text">
+          <p class="eyebrow">For organisations</p>
+          <h3>Corporate</h3>
+          <p>Offsites and team programmes that pair a physical challenge with psychology-backed debriefs.</p>
+        </div>
+      </div>
+      <div class="svc-grid">
+        <div class="svc-card reveal">
+          <span class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="8" width="16" height="12"/><path d="M9 8V5a3 3 0 0 1 6 0v3"/></svg></span>
+          <h4>Body &amp; Mental Wellbeing Package</h4>
+          <p>Fostering physical health through exercise, nutrition and mental wellness practices &mdash; a holistic approach to overall health and happiness.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SCHEDULE ================= -->
+<section class="page" id="page-schedule">
+  <div class="pagehero wrap">
+    <div class="pagehero-split">
+      <div>
+        <p class="eyebrow">Class Schedule</p>
+        <h1>Find your slot.</h1>
+        <p class="lede">Browse classes the way you will in the app: filter by type, tap a class to see open times, then continue to the Pegasus App to lock it in.</p>
+      </div>
+      <div class="app-preview">
+        <div class="app-preview-frame">
+          <div class="app-preview-notch"></div>
+          <div class="app-preview-screen">
+            <div class="app-top"><span class="app-title">Pegasus</span><span class="app-badge">Preview</span></div>
+            <div class="app-chips">
+              <button class="app-chip is-active" data-appfilter="all" type="button">All</button>
+              <button class="app-chip" data-appfilter="physical" type="button">Boxing</button>
+              <button class="app-chip" data-appfilter="mind" type="button">Mindset</button>
+            </div>
+            <div class="app-list" id="appPreviewList">
+              <div class="app-card" data-tag="physical"><span class="app-thumb"></span><div class="app-card-text"><strong>Boxing Fundamentals</strong><span>Today · 7:00 PM · 4 left</span></div></div>
+              <div class="app-card" data-tag="mind"><span class="app-thumb p"></span><div class="app-card-text"><strong>Group Mindset Session</strong><span>Tomorrow · 10:00 AM</span></div></div>
+              <div class="app-card" data-tag="physical"><span class="app-thumb"></span><div class="app-card-text"><strong>Youth Boxing</strong><span>Sat · 10:00 AM · 2 left</span></div></div>
+              <div class="app-card" data-tag="mind" hidden><span class="app-thumb p"></span><div class="app-card-text"><strong>1:1 Counselling</strong><span>By appointment</span></div></div>
+            </div>
+            <div class="app-nav"><span class="app-navicon is-active">&#9679;</span><span class="app-navicon">&#9675;</span><span class="app-navicon">&#9675;</span><span class="app-navicon">&#9675;</span></div>
+          </div>
+        </div>
+        <p class="app-preview-caption">A preview of browsing &amp; booking once sign-in moves to the Pegasus App</p>
+      </div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="class-browser">
+      <div class="cb-chips">
+        <button class="cb-chip is-active" data-filter="all" type="button">All Classes</button>
+        <button class="cb-chip" data-filter="physical" type="button">Boxing</button>
+        <button class="cb-chip" data-filter="mind" type="button">Mind</button>
+      </div>
+      <div class="class-grid" id="classGrid">
+        <button type="button" class="class-card reveal" data-tag="physical"
+          data-name="Boxing Fundamentals" data-desc="Footwork, stance and the four punches &mdash; the class every new member starts with."
+          data-slots="Mon 7:00 AM, Wed 7:00 AM, Fri 7:00 AM">
+          <span class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="12" r="6"/><circle cx="17" cy="9" r="3.2"/></svg></span>
+          <span class="cc-text"><strong>Boxing Fundamentals</strong><span>Mon &middot; Wed &middot; Fri, 7:00 AM</span></span>
+          <span class="cc-spots">4 left today</span>
+        </button>
+        <button type="button" class="class-card reveal" data-tag="physical"
+          data-name="Youth Boxing" data-desc="A lighter-contact class for primary &amp; secondary students, built around games and drills."
+          data-slots="Mon 4:30 PM, Wed 4:30 PM, Sat 10:00 AM">
+          <span class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20 12 5l8 15Z"/><path d="M8.5 20 12 13l3.5 7"/></svg></span>
+          <span class="cc-text"><strong>Youth Boxing</strong><span>Mon &middot; Wed &middot; Sat</span></span>
+          <span class="cc-spots">2 left today</span>
+        </button>
+        <button type="button" class="class-card reveal" data-tag="physical"
+          data-name="Sparring &amp; Conditioning" data-desc="For members past Fundamentals &mdash; light sparring, pad rounds and conditioning circuits."
+          data-slots="Mon 7:00 PM, Wed 7:00 PM, Sat 4:30 PM">
+          <span class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.6" fill="currentColor"/></svg></span>
+          <span class="cc-text"><strong>Sparring &amp; Conditioning</strong><span>Mon &middot; Wed &middot; Sat</span></span>
+          <span class="cc-spots">6 left today</span>
+        </button>
+        <button type="button" class="class-card mindcard reveal" data-tag="mind"
+          data-name="Group Mindset Session" data-desc="A guided group session on focus, composure and handling pressure &mdash; open to all members."
+          data-slots="Tue 10:00 AM, Thu 10:00 AM, Fri 7:00 PM">
+          <span class="icon-tile p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16v10H9l-4 4V5Z"/></svg></span>
+          <span class="cc-text"><strong>Group Mindset Session</strong><span>Tue &middot; Thu &middot; Fri</span></span>
+          <span class="cc-spots">8 left today</span>
+        </button>
+        <button type="button" class="class-card mindcard reveal" data-tag="mind"
+          data-name="1:1 Counselling" data-desc="A confidential session with a registered therapist, in-person or online. Times are arranged after sign-in."
+          data-slots="Request a time in the app">
+          <span class="icon-tile p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></span>
+          <span class="cc-text"><strong>1:1 Counselling</strong><span>By appointment</span></span>
+          <span class="cc-spots">On request</span>
+        </button>
+        <button type="button" class="class-card mindcard reveal" data-tag="mind"
+          data-name="Leadership &amp; Presentation Coaching" data-desc="1:1 coaching for public speaking and composure under pressure. Times are arranged after sign-in."
+          data-slots="Request a time in the app">
+          <span class="icon-tile p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></span>
+          <span class="cc-text"><strong>Leadership Coaching</strong><span>By appointment</span></span>
+          <span class="cc-spots">On request</span>
+        </button>
+      </div>
+    </div>
+    <p class="formnote" style="margin-top:20px;border-top:none;padding-top:0;">Tap any class to see open times &mdash; the live calendar below is the real thing.</p>
+  </div>
+
+  <div class="wrap" style="margin-top:clamp(32px,5vw,56px);">
+    <div class="section-head">
+      <p class="eyebrow">Live &amp; ready to book</p>
+      <h2>Book straight from here.</h2>
+      <p class="lede">This is the real Pegasus booking system, embedded &mdash; browse signed out, sign in only when you tap Book.</p>
+    </div>
+    <div style="border-radius:20px;overflow:hidden;border:1px solid var(--line);box-shadow:0 20px 44px var(--shadow);">
+      <iframe src="https://psas-shop.web.app/#/timetable" title="Book a class" loading="lazy"
+        style="width:100%;height:760px;border:0;display:block;background:var(--paper-raised);"></iframe>
+    </div>
+  </div>
+</section>
+
+<div class="cb-overlay" id="cbOverlay"></div>
+<aside class="cb-drawer" id="cbDrawer" aria-hidden="true">
+  <button class="cb-close" id="cbClose" type="button" aria-label="Close">&times;</button>
+  <p class="eyebrow on-orange" id="cbEyebrow">Class</p>
+  <h3 id="cbTitle" style="margin-top:8px;">Class name</h3>
+  <p id="cbDesc" style="color:var(--ink-soft);margin-top:12px;"></p>
+  <div id="cbSlots" class="cb-slots"></div>
+  <button class="btn btn-orange" id="cbContinue" type="button" style="margin-top:22px;" disabled>Select a time</button>
+  <p class="formnote" style="margin-top:18px;">Booking finishes securely in the Pegasus App &mdash; one sign-in for classes, camps and memberships.</p>
+</aside>
+
+<!-- ================= COUNSELLING ================= -->
+<section class="page" id="page-counseling">
+  <div class="pagehero wrap">
+    <div class="pagehero-split">
+      <div>
+        <span class="badge-inline">IACT-registered practice</span>
+        <h1 style="margin-top:14px;">A confidential space to work through what's weighing on you.</h1>
+        <p class="lede">Counselling and psychotherapy at Pegasus is for individuals, students and athletes working through stress, anxiety, confidence, motivation, or performance blocks &mdash; not only for people in crisis.</p>
+        <div class="ctas" style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;">
+          <a class="btn btn-pine" href="https://psas-shop.web.app" target="_blank" rel="noopener">Book a confidential session</a>
+          <a class="btn btn-ghost" href="#contact">Ask a question first</a>
+        </div>
+      </div>
+      <svg class="pfig" viewBox="0 0 200 220" aria-hidden="true">
+        <defs><linearGradient id="mindGradA" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="var(--pine)"/><stop offset="100%" stop-color="var(--pine-deep)"/>
+        </linearGradient></defs>
+        <circle class="aura aura-1" cx="100" cy="100" r="86" fill="none" stroke="var(--pine)" stroke-width="1.5" opacity="0.18"/>
+        <circle class="aura aura-2" cx="100" cy="100" r="66" fill="none" stroke="var(--pine)" stroke-width="1.5" opacity="0.25"/>
+        <ellipse cx="100" cy="196" rx="62" ry="12" fill="var(--ink)" opacity="0.08"/>
+        <path d="M100,86 L100,128 M100,128 L62,150 M100,128 L138,150 M100,100 L76,128 M100,100 L124,128"
+              fill="none" stroke="url(#mindGradA)" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="100" cy="62" r="22" fill="url(#mindGradA)"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="split">
+      <div class="reveal">
+        <p class="eyebrow on-pine">Who this is for</p>
+        <h3>Students, athletes &amp; working adults</h3>
+        <ul>
+          <li>Students managing exam stress, motivation or school transitions</li>
+          <li>Athletes working through performance anxiety, burnout or injury setbacks</li>
+          <li>Adults navigating work stress, confidence or life changes</li>
+          <li>Anyone who wants structured support, not just a listening ear</li>
+        </ul>
+      </div>
+      <div class="reveal">
+        <p class="eyebrow on-pine">How sessions work</p>
+        <h3>In-person or online</h3>
+        <ul>
+          <li>Sessions held at the academy or over video call</li>
+          <li>First session focuses on understanding your goals, not diagnosis</li>
+          <li>Approach draws on sport &amp; performance psychology as well as talk therapy</li>
+          <li>Everything discussed is confidential between you and your therapist</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head"><p class="eyebrow">Common questions</p><h2>Before you book</h2></div>
+      <div class="faq-item"><h4>What happens in the first session?</h4><p>You and your therapist talk through what brought you in and what you'd like to be different. There's no obligation to continue if it doesn't feel right &mdash; fit matters.</p></div>
+      <div class="faq-item"><h4>Do you work with teens?</h4><p>Yes. Sessions with minors involve an initial conversation with a parent or guardian about goals and boundaries around confidentiality.</p></div>
+      <div class="faq-item"><h4>Is this only for athletes?</h4><p>No &mdash; our sport psychology background shapes our approach, but counselling clients come from all walks of life, not only sport.</p></div>
+      <div class="faq-item"><h4>How do I book?</h4><p>Use Book a Class/Session above, or message us via the contact page and we'll match you with a therapist.</p></div>
+    </div>
+  </section>
+</section>
+
+<!-- ================= CORPORATE & SCHOOL ================= -->
+<section class="page" id="page-corporate">
+  <div class="pagehero wrap">
+    <div class="pagehero-split">
+      <div>
+        <p class="eyebrow">Corporate &amp; School Programmes</p>
+        <h1>Resilience training for teams, and enrichment for schools.</h1>
+        <p class="lede">The same pairing of physical challenge and mental skills coaching, delivered to organisations and MOE classrooms rather than individuals.</p>
+      </div>
+      <span class="pphoto"><img src="assets/img/class-photo-4.jpg" alt="A diverse group of Pegasus members and coaches after a team session" loading="lazy"></span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="split">
+      <div class="reveal">
+        <p class="eyebrow on-orange">For schools</p>
+        <h3>MOE-registered enrichment</h3>
+        <p style="color:var(--ink-soft);">Co-curricular and enrichment activities combining boxing fundamentals with character education &mdash; discipline, focus and composure, built through structured physical practice.</p>
+        <ul>
+          <li>MOE-registered instructors for co-curricular activities</li>
+          <li>Character &amp; resilience modules alongside boxing skills</li>
+          <li>Runs as CCA blocks, enrichment days, or School Holiday Camps</li>
+        </ul>
+      </div>
+      <div class="reveal">
+        <p class="eyebrow on-pine">For organisations</p>
+        <h3>Team resilience workshops</h3>
+        <p style="color:var(--ink-soft);">Half- or full-day sessions that pair a physical challenge (boxing-based drills, no experience required) with psychology-backed debriefs on stress, communication and pressure.</p>
+        <ul>
+          <li>Offsites and team-building days</li>
+          <li>Stress &amp; resilience workshops for teams under pressure</li>
+          <li>Scales from small teams to whole departments</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <div class="feature-band">
+        <div>
+          <p class="eyebrow" style="color:color-mix(in srgb, var(--orange-ink) 85%, transparent);">Featured programme</p>
+          <h3>Leadership &amp; Presentation Training</h3>
+          <p>Public speaking, boardroom presence and composure under pressure &mdash; trained the same deliberate way we train a jab or a slip: technique, repetition, and pressure-tested practice, not just tips.</p>
+        </div>
+        <a class="btn btn-ghost" style="border-color:color-mix(in srgb, var(--orange-ink) 55%, transparent);color:var(--orange-ink);" href="#contact">Request a proposal</a>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ================= CAMPS ================= -->
+<section class="page" id="page-camps">
+  <div class="pagehero wrap">
+    <div class="pagehero-split">
+      <div>
+        <span class="badge-inline">Registration open &middot; Nov&ndash;Dec 2026</span>
+        <h1 style="margin-top:14px;">School Holiday Camp</h1>
+        <p class="lede">A structured holiday programme for primary and secondary school students, built around the same body-and-mind pairing as our adult programmes &mdash; boxing skills in the morning, mindset work woven throughout.</p>
+        <div class="ctas" style="display:flex;gap:12px;margin-top:24px;">
+          <a class="btn btn-orange" href="https://psas-shop.web.app" target="_blank" rel="noopener">Register for camp</a>
+          <a class="btn btn-ghost" href="#contact">Ask about age groups</a>
+        </div>
+      </div>
+      <span class="pphoto"><img src="assets/img/class-photo-1.jpg" alt="Children proudly holding medals and certificates from a Pegasus School Holiday Camp" loading="lazy"></span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="section-head"><p class="eyebrow">A typical camp day</p><h2>Structure, not just supervision.</h2></div>
+    <div class="daylist">
+      <div class="day reveal"><span class="num">1</span><h4>Warm-up &amp; footwork</h4><p>Movement fundamentals and games to open the day.</p></div>
+      <div class="day reveal"><span class="num">2</span><h4>Boxing skills circuit</h4><p>Pad work and technique stations, grouped by ability.</p></div>
+      <div class="day reveal"><span class="num">3</span><h4>Mindset workshop</h4><p>Short, age-appropriate sessions on focus, teamwork and handling setbacks.</p></div>
+      <div class="day reveal"><span class="num">4</span><h4>Reflection &amp; goal-setting</h4><p>Each child leaves with one thing they got better at that day.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MEMBERSHIPS ================= -->
+<section class="page" id="page-memberships">
+  <div class="pagehero wrap">
+    <p class="eyebrow">Memberships &amp; Package Deals</p>
+    <h1>Pick a plan that matches how often you'll come in.</h1>
+    <p class="lede">Every plan includes access to group boxing classes. Counselling and 1:1 psychology sessions are booked separately at member rates.</p>
+  </div>
+
+  <div class="wrap">
+    <div class="tiers">
+      <div class="tier reveal">
+        <span class="tname">Drop-In</span>
+        <span class="tnote">Try a single class</span>
+        <ul>
+          <li>&#10003; One group class of your choice</li>
+          <li>&#10003; No commitment</li>
+          <li>&#10003; Good for first-timers</li>
+        </ul>
+      </div>
+      <div class="tier featured reveal">
+        <span class="pill">Most popular</span>
+        <span class="tname">Class Pack</span>
+        <span class="tnote">10-session bundle</span>
+        <ul>
+          <li>&#10003; 10 group classes, use anytime</li>
+          <li>&#10003; Priority booking for popular slots</li>
+          <li>&#10003; 10% off your first counselling session</li>
+        </ul>
+      </div>
+      <div class="tier reveal">
+        <span class="tname">Unlimited Monthly</span>
+        <span class="tnote">For regulars</span>
+        <ul>
+          <li>&#10003; Unlimited group classes</li>
+          <li>&#10003; Member rate on 1:1 counselling</li>
+          <li>&#10003; Priority camp registration</li>
+        </ul>
+      </div>
+      <div class="tier reveal">
+        <span class="tname">Corporate / Team</span>
+        <span class="tnote">For organisations</span>
+        <ul>
+          <li>&#10003; Bulk class credits for your team</li>
+          <li>&#10003; Bundled resilience workshop add-on</li>
+          <li>&#10003; Dedicated account contact</li>
+        </ul>
+      </div>
+    </div>
+    <p class="formnote" style="margin-top:24px;">Current pricing is confirmed at booking or on request &mdash; <a href="#contact" style="color:var(--orange-deep);">contact us</a> for this month's rates.</p>
+  </div>
+
+  <div class="wrap" style="margin-top:clamp(32px,5vw,56px);">
+    <div class="section-head">
+      <p class="eyebrow">Live plans &amp; pricing</p>
+      <h2>Browse and buy below.</h2>
+      <p class="lede">Real-time plan list from our booking system &mdash; browse signed out, sign in only when you tap Purchase.</p>
+    </div>
+    <div style="border-radius:20px;overflow:hidden;border:1px solid var(--line);box-shadow:0 20px 44px var(--shadow);">
+      <iframe src="https://psas-shop.web.app/#/membership" title="Membership plans" loading="lazy"
+        style="width:100%;height:900px;border:0;display:block;background:var(--paper-raised);"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="page" id="page-contact">
+  <div class="pagehero wrap">
+    <p class="eyebrow">Contact</p>
+    <h1>Let's talk.</h1>
+    <p class="lede">Questions about a class, a counselling session, or a programme for your school or team &mdash; reach out and we'll point you the right way.</p>
+  </div>
+
+  <div class="wrap">
+    <div class="contact-grid">
+      <div class="contact-card">
+        <h3>Get in touch</h3>
+        <div class="contact-line"><span class="l">WhatsApp</span><span class="v">Message us on WhatsApp &mdash; button connects on launch</span></div>
+        <div class="contact-line"><span class="l">Email</span><span class="v"><a href="mailto:msaratkumar3@gmail.com">msaratkumar3@gmail.com</a></span></div>
+        <div class="contact-line"><span class="l">Location</span><span class="v">Singapore</span></div>
+        <div class="contact-line"><span class="l">Member login &amp; bookings</span><span class="v"><a href="https://psas-shop.web.app" target="_blank" rel="noopener">psas-shop.web.app</a></span></div>
+        <hr class="rule">
+        <p style="font-size:0.85rem;color:var(--ink-soft);">One account for everything: sign in once on the Pegasus App to browse classes, book a slot, and manage your membership.</p>
+      </div>
+      <form class="enquiry" onsubmit="event.preventDefault();">
+        <div class="row2">
+          <div class="field"><label for="c-name">Name</label><input id="c-name" type="text" placeholder="Your name"></div>
+          <div class="field"><label for="c-email">Email</label><input id="c-email" type="email" placeholder="you@example.com"></div>
+        </div>
+        <div class="field">
+          <label for="c-interest">I'm interested in</label>
+          <select id="c-interest">
+            <option>Boxing / group classes</option>
+            <option>Counselling &amp; psychotherapy</option>
+            <option>Corporate programme</option>
+            <option>School programme</option>
+            <option>School holiday camp</option>
+            <option>Membership pricing</option>
+          </select>
+        </div>
+        <div class="field"><label for="c-msg">Message</label><textarea id="c-msg" placeholder="Tell us a little about what you're looking for"></textarea></div>
+        <button class="btn btn-orange" type="submit" style="align-self:flex-start;">Send enquiry</button>
+        <p class="formnote">This form is a design placeholder &mdash; connect it to your booking system or an email service before launch.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <span class="foot-logo-plate"><img class="foot-logo" src="assets/img/pegasus-logo-trim.png" alt="Pegasus Boxing Club"></span>
+        <p>Sports &amp; Mental Wellbeing Academy, Singapore. Boxing, counselling and sport psychology, coached together.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Train</h5>
+        <a href="#schedule">Class Schedule</a>
+        <a href="#memberships">Memberships</a>
+        <a href="#camps">Holiday Camp</a>
+      </div>
+      <div class="foot-col">
+        <h5>Mind</h5>
+        <a href="#counseling">Counselling</a>
+        <a href="#corporate">Corporate &amp; School</a>
+        <a href="#corporate">Leadership Training</a>
+      </div>
+      <div class="foot-col">
+        <h5>Academy</h5>
+        <a href="#services">All Services</a>
+        <a href="#contact">Contact</a>
+        <a href="https://psas-shop.web.app" target="_blank" rel="noopener">Member Login</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 Pegasus Sports &amp; Mental Wellbeing Academy Singapore</span>
+      <span>Design concept &middot; not yet the live site</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var pages = ['home','services','schedule','counseling','corporate','camps','memberships','contact'];
+  var links = document.querySelectorAll('[data-link]');
+  var nav = document.getElementById('primaryNav');
+  var toggle = document.getElementById('navToggle');
+
+  function route(){
+    var hash = (location.hash || '#home').replace('#','');
+    if(pages.indexOf(hash) === -1) hash = 'home';
+    pages.forEach(function(p){
+      var el = document.getElementById('page-' + p);
+      if(el) el.classList.toggle('is-active', p === hash);
+    });
+    links.forEach(function(a){
+      a.classList.toggle('is-active', a.getAttribute('data-link') === hash);
+    });
+    window.scrollTo({top:0, behavior:'auto'});
+    closeNav();
+    document.querySelectorAll('.cb-drawer.is-open, .cb-overlay.is-open').forEach(function(el){
+      el.classList.remove('is-open');
+    });
+  }
+
+  function closeNav(){
+    nav.classList.remove('open');
+    toggle.classList.remove('open');
+    toggle.setAttribute('aria-expanded','false');
+  }
+
+  toggle.addEventListener('click', function(){
+    var isOpen = nav.classList.toggle('open');
+    toggle.classList.toggle('open', isOpen);
+    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+
+  window.addEventListener('hashchange', route);
+  route();
+})();
+
+/* ---- scroll reveal ---- */
+(function(){
+  var els = document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)){
+    els.forEach(function(el){ el.classList.add('is-in'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('is-in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.15, rootMargin:'0px 0px -40px 0px'});
+  els.forEach(function(el){ io.observe(el); });
+  /* Safety net: never leave content permanently invisible if the observer
+     is slow (or never fires, e.g. a resized/printed view) — force everything
+     visible shortly after load regardless of scroll position. */
+  setTimeout(function(){
+    els.forEach(function(el){ el.classList.add('is-in'); });
+  }, 1400);
+})();
+
+/* ---- hero app-preview mini filter ---- */
+(function(){
+  var chips = document.querySelectorAll('.app-chip');
+  var cards = document.querySelectorAll('#appPreviewList .app-card');
+  chips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      chips.forEach(function(c){ c.classList.remove('is-active'); });
+      chip.classList.add('is-active');
+      var f = chip.getAttribute('data-appfilter');
+      cards.forEach(function(card){
+        card.hidden = !(f === 'all' || card.getAttribute('data-tag') === f);
+      });
+    });
+  });
+})();
+
+/* ---- services tabs ---- */
+(function(){
+  var tabs = document.querySelectorAll('.svc-tab');
+  var panels = document.querySelectorAll('.svc-panel');
+  if(!tabs.length) return;
+  tabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      tabs.forEach(function(t){ t.classList.remove('is-active'); });
+      tab.classList.add('is-active');
+      var target = tab.getAttribute('data-svc');
+      panels.forEach(function(panel){
+        var match = panel.getAttribute('data-svc-panel') === target;
+        panel.hidden = !match;
+        panel.classList.toggle('is-active', match);
+      });
+    });
+  });
+})();
+
+/* ---- interactive class browser ---- */
+(function(){
+  var chips = document.querySelectorAll('.cb-chip');
+  var cards = document.querySelectorAll('.class-card');
+  var overlay = document.getElementById('cbOverlay');
+  var drawer = document.getElementById('cbDrawer');
+  if(!overlay || !drawer) return;
+  var closeBtn = document.getElementById('cbClose');
+  var eyebrow = document.getElementById('cbEyebrow');
+  var title = document.getElementById('cbTitle');
+  var desc = document.getElementById('cbDesc');
+  var slotsWrap = document.getElementById('cbSlots');
+  var continueBtn = document.getElementById('cbContinue');
+
+  chips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      chips.forEach(function(c){ c.classList.remove('is-active'); });
+      chip.classList.add('is-active');
+      var f = chip.getAttribute('data-filter');
+      cards.forEach(function(card){
+        card.hidden = !(f === 'all' || card.getAttribute('data-tag') === f);
+      });
+    });
+  });
+
+  function openDrawer(card){
+    title.textContent = card.getAttribute('data-name');
+    desc.innerHTML = card.getAttribute('data-desc');
+    eyebrow.textContent = card.getAttribute('data-tag') === 'mind' ? 'Mind' : 'Physical';
+    var slots = card.getAttribute('data-slots').split(',');
+    slotsWrap.innerHTML = '';
+    continueBtn.disabled = true;
+    continueBtn.textContent = 'Select a time';
+    slots.forEach(function(s){
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'cb-slot';
+      b.textContent = s.trim();
+      b.addEventListener('click', function(){
+        slotsWrap.querySelectorAll('.cb-slot').forEach(function(x){ x.classList.remove('is-selected'); });
+        b.classList.add('is-selected');
+        continueBtn.disabled = false;
+        continueBtn.textContent = 'Continue in Pegasus App →';
+      });
+      slotsWrap.appendChild(b);
+    });
+    overlay.classList.add('is-open');
+    drawer.classList.add('is-open');
+    drawer.setAttribute('aria-hidden','false');
+  }
+  function closeDrawer(){
+    overlay.classList.remove('is-open');
+    drawer.classList.remove('is-open');
+    drawer.setAttribute('aria-hidden','true');
+  }
+  cards.forEach(function(card){
+    card.addEventListener('click', function(){ openDrawer(card); });
+  });
+  overlay.addEventListener('click', closeDrawer);
+  closeBtn.addEventListener('click', closeDrawer);
+  continueBtn.addEventListener('click', function(){
+    if(!continueBtn.disabled){ window.open('https://psas-shop.web.app', '_blank', 'noopener'); }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeDrawer();
+  });
+})();
+</script>
+
+</body></html>
