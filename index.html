@@ -979,96 +979,12 @@
 <!-- ================= SCHEDULE ================= -->
 <section class="page" id="page-schedule">
   <div class="pagehero wrap">
-    <div class="pagehero-split">
-      <div>
-        <p class="eyebrow">Class Schedule</p>
-        <h1>Find your slot.</h1>
-        <p class="lede">Browse classes the way you will in the app: filter by type, tap a class to see open times, then continue to the Pegasus App to lock it in.</p>
-      </div>
-      <div class="app-preview">
-        <div class="app-preview-frame">
-          <div class="app-preview-notch"></div>
-          <div class="app-preview-screen">
-            <div class="app-top"><span class="app-title">Pegasus</span><span class="app-badge">Preview</span></div>
-            <div class="app-chips">
-              <button class="app-chip is-active" data-appfilter="all" type="button">All</button>
-              <button class="app-chip" data-appfilter="physical" type="button">Boxing</button>
-              <button class="app-chip" data-appfilter="mind" type="button">Mindset</button>
-            </div>
-            <div class="app-list" id="appPreviewList">
-              <div class="app-card" data-tag="physical"><span class="app-thumb"></span><div class="app-card-text"><strong>Boxing Fundamentals</strong><span>Today · 7:00 PM · 4 left</span></div></div>
-              <div class="app-card" data-tag="mind"><span class="app-thumb p"></span><div class="app-card-text"><strong>Group Mindset Session</strong><span>Tomorrow · 10:00 AM</span></div></div>
-              <div class="app-card" data-tag="physical"><span class="app-thumb"></span><div class="app-card-text"><strong>Youth Boxing</strong><span>Sat · 10:00 AM · 2 left</span></div></div>
-              <div class="app-card" data-tag="mind" hidden><span class="app-thumb p"></span><div class="app-card-text"><strong>1:1 Counselling</strong><span>By appointment</span></div></div>
-            </div>
-            <div class="app-nav"><span class="app-navicon is-active">&#9679;</span><span class="app-navicon">&#9675;</span><span class="app-navicon">&#9675;</span><span class="app-navicon">&#9675;</span></div>
-          </div>
-        </div>
-        <p class="app-preview-caption">A preview of browsing &amp; booking once sign-in moves to the Pegasus App</p>
-      </div>
-    </div>
-  </div>
-  <div class="wrap">
-    <div class="class-browser">
-      <div class="cb-chips">
-        <button class="cb-chip is-active" data-filter="all" type="button">All Classes</button>
-        <button class="cb-chip" data-filter="physical" type="button">Boxing</button>
-        <button class="cb-chip" data-filter="mind" type="button">Mind</button>
-      </div>
-      <div class="class-grid" id="classGrid">
-        <button type="button" class="class-card reveal" data-tag="physical"
-          data-name="Boxing Fundamentals" data-desc="Footwork, stance and the four punches &mdash; the class every new member starts with."
-          data-slots="Mon 7:00 AM, Wed 7:00 AM, Fri 7:00 AM">
-          <span class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="12" r="6"/><circle cx="17" cy="9" r="3.2"/></svg></span>
-          <span class="cc-text"><strong>Boxing Fundamentals</strong><span>Mon &middot; Wed &middot; Fri, 7:00 AM</span></span>
-          <span class="cc-spots">4 left today</span>
-        </button>
-        <button type="button" class="class-card reveal" data-tag="physical"
-          data-name="Youth Boxing" data-desc="A lighter-contact class for primary &amp; secondary students, built around games and drills."
-          data-slots="Mon 4:30 PM, Wed 4:30 PM, Sat 10:00 AM">
-          <span class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20 12 5l8 15Z"/><path d="M8.5 20 12 13l3.5 7"/></svg></span>
-          <span class="cc-text"><strong>Youth Boxing</strong><span>Mon &middot; Wed &middot; Sat</span></span>
-          <span class="cc-spots">2 left today</span>
-        </button>
-        <button type="button" class="class-card reveal" data-tag="physical"
-          data-name="Sparring &amp; Conditioning" data-desc="For members past Fundamentals &mdash; light sparring, pad rounds and conditioning circuits."
-          data-slots="Mon 7:00 PM, Wed 7:00 PM, Sat 4:30 PM">
-          <span class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.6" fill="currentColor"/></svg></span>
-          <span class="cc-text"><strong>Sparring &amp; Conditioning</strong><span>Mon &middot; Wed &middot; Sat</span></span>
-          <span class="cc-spots">6 left today</span>
-        </button>
-        <button type="button" class="class-card mindcard reveal" data-tag="mind"
-          data-name="Group Mindset Session" data-desc="A guided group session on focus, composure and handling pressure &mdash; open to all members."
-          data-slots="Tue 10:00 AM, Thu 10:00 AM, Fri 7:00 PM">
-          <span class="icon-tile p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16v10H9l-4 4V5Z"/></svg></span>
-          <span class="cc-text"><strong>Group Mindset Session</strong><span>Tue &middot; Thu &middot; Fri</span></span>
-          <span class="cc-spots">8 left today</span>
-        </button>
-        <button type="button" class="class-card mindcard reveal" data-tag="mind"
-          data-name="1:1 Counselling" data-desc="A confidential session with a registered therapist, in-person or online. Times are arranged after sign-in."
-          data-slots="Request a time in the app">
-          <span class="icon-tile p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></span>
-          <span class="cc-text"><strong>1:1 Counselling</strong><span>By appointment</span></span>
-          <span class="cc-spots">On request</span>
-        </button>
-        <button type="button" class="class-card mindcard reveal" data-tag="mind"
-          data-name="Leadership &amp; Presentation Coaching" data-desc="1:1 coaching for public speaking and composure under pressure. Times are arranged after sign-in."
-          data-slots="Request a time in the app">
-          <span class="icon-tile p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></span>
-          <span class="cc-text"><strong>Leadership Coaching</strong><span>By appointment</span></span>
-          <span class="cc-spots">On request</span>
-        </button>
-      </div>
-    </div>
-    <p class="formnote" style="margin-top:20px;border-top:none;padding-top:0;">Tap any class to see open times &mdash; the live calendar below is the real thing.</p>
+    <p class="eyebrow">Class Schedule</p>
+    <h1>Find your slot.</h1>
+    <p class="lede">Browse the live class calendar below &mdash; filter by type, tap a class to see open times, sign in only when you're ready to book.</p>
   </div>
 
-  <div class="wrap" style="margin-top:clamp(32px,5vw,56px);">
-    <div class="section-head">
-      <p class="eyebrow">Live &amp; ready to book</p>
-      <h2>Book straight from here.</h2>
-      <p class="lede">This is the real Pegasus booking system, embedded &mdash; browse signed out, sign in only when you tap Book.</p>
-    </div>
+  <div class="wrap" style="margin-top:clamp(28px,4vw,40px);">
     <div class="embed-frame">
       <div class="embed-frame-head">
         <span class="embed-frame-live"><span class="dot"></span>Live</span>
@@ -1078,17 +994,6 @@
     </div>
   </div>
 </section>
-
-<div class="cb-overlay" id="cbOverlay"></div>
-<aside class="cb-drawer" id="cbDrawer" aria-hidden="true">
-  <button class="cb-close" id="cbClose" type="button" aria-label="Close">&times;</button>
-  <p class="eyebrow on-orange" id="cbEyebrow">Class</p>
-  <h3 id="cbTitle" style="margin-top:8px;">Class name</h3>
-  <p id="cbDesc" style="color:var(--ink-soft);margin-top:12px;"></p>
-  <div id="cbSlots" class="cb-slots"></div>
-  <button class="btn btn-orange" id="cbContinue" type="button" style="margin-top:22px;" disabled>Select a time</button>
-  <p class="formnote" style="margin-top:18px;">Booking finishes securely in the Pegasus App &mdash; one sign-in for classes, camps and memberships.</p>
-</aside>
 
 <!-- ================= COUNSELLING ================= -->
 <section class="page" id="page-counseling">
@@ -1238,58 +1143,10 @@
   <div class="pagehero wrap">
     <p class="eyebrow">Memberships &amp; Package Deals</p>
     <h1>Pick a plan that matches how often you'll come in.</h1>
-    <p class="lede">Every plan includes access to group boxing classes. Counselling and 1:1 psychology sessions are booked separately at member rates.</p>
+    <p class="lede">Live plans and pricing below &mdash; browse signed out, sign in only when you tap Purchase.</p>
   </div>
 
-  <div class="wrap">
-    <div class="tiers">
-      <div class="tier reveal">
-        <span class="tname">Drop-In</span>
-        <span class="tnote">Try a single class</span>
-        <ul>
-          <li>&#10003; One group class of your choice</li>
-          <li>&#10003; No commitment</li>
-          <li>&#10003; Good for first-timers</li>
-        </ul>
-      </div>
-      <div class="tier featured reveal">
-        <span class="pill">Most popular</span>
-        <span class="tname">Class Pack</span>
-        <span class="tnote">10-session bundle</span>
-        <ul>
-          <li>&#10003; 10 group classes, use anytime</li>
-          <li>&#10003; Priority booking for popular slots</li>
-          <li>&#10003; 10% off your first counselling session</li>
-        </ul>
-      </div>
-      <div class="tier reveal">
-        <span class="tname">Unlimited Monthly</span>
-        <span class="tnote">For regulars</span>
-        <ul>
-          <li>&#10003; Unlimited group classes</li>
-          <li>&#10003; Member rate on 1:1 counselling</li>
-          <li>&#10003; Priority camp registration</li>
-        </ul>
-      </div>
-      <div class="tier reveal">
-        <span class="tname">Corporate / Team</span>
-        <span class="tnote">For organisations</span>
-        <ul>
-          <li>&#10003; Bulk class credits for your team</li>
-          <li>&#10003; Bundled resilience workshop add-on</li>
-          <li>&#10003; Dedicated account contact</li>
-        </ul>
-      </div>
-    </div>
-    <p class="formnote" style="margin-top:24px;">Current pricing is confirmed at booking or on request &mdash; <a href="#contact" style="color:var(--orange-deep);">contact us</a> for this month's rates.</p>
-  </div>
-
-  <div class="wrap" style="margin-top:clamp(32px,5vw,56px);">
-    <div class="section-head">
-      <p class="eyebrow">Live plans &amp; pricing</p>
-      <h2>Browse and buy below.</h2>
-      <p class="lede">Real-time plan list from our booking system &mdash; browse signed out, sign in only when you tap Purchase.</p>
-    </div>
+  <div class="wrap" style="margin-top:clamp(28px,4vw,40px);">
     <div class="embed-frame">
       <div class="embed-frame-head">
         <span class="embed-frame-live"><span class="dot"></span>Live</span>
@@ -1442,22 +1299,6 @@
   }, 1400);
 })();
 
-/* ---- hero app-preview mini filter ---- */
-(function(){
-  var chips = document.querySelectorAll('.app-chip');
-  var cards = document.querySelectorAll('#appPreviewList .app-card');
-  chips.forEach(function(chip){
-    chip.addEventListener('click', function(){
-      chips.forEach(function(c){ c.classList.remove('is-active'); });
-      chip.classList.add('is-active');
-      var f = chip.getAttribute('data-appfilter');
-      cards.forEach(function(card){
-        card.hidden = !(f === 'all' || card.getAttribute('data-tag') === f);
-      });
-    });
-  });
-})();
-
 /* ---- services tabs ---- */
 (function(){
   var tabs = document.querySelectorAll('.svc-tab');
@@ -1477,73 +1318,6 @@
   });
 })();
 
-/* ---- interactive class browser ---- */
-(function(){
-  var chips = document.querySelectorAll('.cb-chip');
-  var cards = document.querySelectorAll('.class-card');
-  var overlay = document.getElementById('cbOverlay');
-  var drawer = document.getElementById('cbDrawer');
-  if(!overlay || !drawer) return;
-  var closeBtn = document.getElementById('cbClose');
-  var eyebrow = document.getElementById('cbEyebrow');
-  var title = document.getElementById('cbTitle');
-  var desc = document.getElementById('cbDesc');
-  var slotsWrap = document.getElementById('cbSlots');
-  var continueBtn = document.getElementById('cbContinue');
-
-  chips.forEach(function(chip){
-    chip.addEventListener('click', function(){
-      chips.forEach(function(c){ c.classList.remove('is-active'); });
-      chip.classList.add('is-active');
-      var f = chip.getAttribute('data-filter');
-      cards.forEach(function(card){
-        card.hidden = !(f === 'all' || card.getAttribute('data-tag') === f);
-      });
-    });
-  });
-
-  function openDrawer(card){
-    title.textContent = card.getAttribute('data-name');
-    desc.innerHTML = card.getAttribute('data-desc');
-    eyebrow.textContent = card.getAttribute('data-tag') === 'mind' ? 'Mind' : 'Physical';
-    var slots = card.getAttribute('data-slots').split(',');
-    slotsWrap.innerHTML = '';
-    continueBtn.disabled = true;
-    continueBtn.textContent = 'Select a time';
-    slots.forEach(function(s){
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'cb-slot';
-      b.textContent = s.trim();
-      b.addEventListener('click', function(){
-        slotsWrap.querySelectorAll('.cb-slot').forEach(function(x){ x.classList.remove('is-selected'); });
-        b.classList.add('is-selected');
-        continueBtn.disabled = false;
-        continueBtn.textContent = 'Continue in Pegasus App →';
-      });
-      slotsWrap.appendChild(b);
-    });
-    overlay.classList.add('is-open');
-    drawer.classList.add('is-open');
-    drawer.setAttribute('aria-hidden','false');
-  }
-  function closeDrawer(){
-    overlay.classList.remove('is-open');
-    drawer.classList.remove('is-open');
-    drawer.setAttribute('aria-hidden','true');
-  }
-  cards.forEach(function(card){
-    card.addEventListener('click', function(){ openDrawer(card); });
-  });
-  overlay.addEventListener('click', closeDrawer);
-  closeBtn.addEventListener('click', closeDrawer);
-  continueBtn.addEventListener('click', function(){
-    if(!continueBtn.disabled){ window.open('https://psas-shop.web.app', '_blank', 'noopener'); }
-  });
-  document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape') closeDrawer();
-  });
-})();
 </script>
 
 </body></html>
